@@ -1,5 +1,6 @@
 package sample;
 
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,13 +10,24 @@ import java.util.Set;
  */
 public class lexer {
 
-    
 
-    public String lexercise(){
+    public static String lexercise(String baseString){
+
+        Character[] symbols = {'{','}','(',')','='};
+
+    //Arrays.asList(symbols).contains(baseString.charAt(i))
+        for(int i=0; i < baseString.length(); i++){
+            if (baseString.charAt(i) == '{'  ) {
+
+            } else {
+
+            }
+        }
 
 
+        String lexedString = "";
 
-        return "This will be the Array output of tokens";
+        return lexedString;
     }
 
 

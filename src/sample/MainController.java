@@ -16,6 +16,10 @@ public class MainController {
         // Button was clicked, do something...
 
         String baseString = taInput.getText().trim();
+        String lexedString = lexer.lexercise(baseString);
+        taOutput.appendText(lexedString + "\n");
+
+        /*
         String noSpaces = "";
         int count = 0;
 
@@ -37,5 +41,9 @@ public class MainController {
         taOutput.appendText(noSpaces + "\n" + count + "\n");
         taOutput.appendText(test1.getToken() + "\n");
         taOutput.appendText(test2.getToken() + "\n");
+        */
+
+
+
     }
 }
