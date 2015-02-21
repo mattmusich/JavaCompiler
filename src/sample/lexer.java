@@ -4,20 +4,29 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.*;
+import java.lang.Enum;
 
-/**
- * Created by matt on 2/9/2015.
- */
+
 public class lexer {
+
+    public static enum TokenType
 
 
     public static String lexercise(String baseString){
 
-        Character[] symbols = {'{','}','(',')','='};
+        String newInput = baseString;
 
-    //Arrays.asList(symbols).contains(baseString.charAt(i))
+
+
+
+
         for(int i=0; i < baseString.length(); i++){
-            if (baseString.charAt(i) == '{'  ) {
+            if (Character.toString(baseString.charAt(i)).matches("[a-z]") ) {
+                if (Character.toString(baseString.charAt(i)).matches("b"))
+                    tempLetters += Character.toString(baseString.charAt(i));
+
+
 
             } else {
 
