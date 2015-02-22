@@ -14,6 +14,16 @@ public class lexer {
     public static String lexercise(String baseString){
 
         ArrayList<token> tokens = new ArrayList<token>();
+        ArrayList<String> keywords = new ArrayList<String>();
+        keywords.add("boolean");
+        keywords.add("false");
+        keywords.add("if");
+        keywords.add("int");
+        keywords.add("print");
+        keywords.add("string");
+        keywords.add("true");
+        keywords.add("while");
+
 
         // MY Strings
         String pastText = "";
@@ -22,9 +32,10 @@ public class lexer {
         String tokenText = "";
         String errorText = "Errors: ";
         String tokenString = "";
-        int forward = 1;
+        int indexPlace = 0;
 
         for(int i=0; i < remainingText.length(); i++) {
+            //Symbol checking is all done
             if (Character.toString(baseString.charAt(i)).matches("[{|}|(|)|\"|=|!|+]")) {
                 switch (baseString.charAt(i)) {
                     case '{': tokens.add(new token("LBRACK","{")); break;
@@ -59,8 +70,32 @@ public class lexer {
                 }
 
             } else if (Character.toString(baseString.charAt(i)).matches("[0-9]")) {
+                //To EZ
+                    tokens.add(new token("DIGIT",Character.toString(baseString.charAt(i))));
 
             } else if (Character.toString(baseString.charAt(i)).matches("[a-z]")) {
+                //adds the first char to the tokenText
+                tokenText += Character.toString(baseString.charAt(i));
+
+                if ( i+1 < baseString.length()) {
+                    if (Character.toString(baseString.charAt(i+1)).matches("[a-z]")) {
+
+                        //design some kind of loop to check all of the possibilities
+                            tokenText += Character.toString(baseString.charAt(i+1));
+                            if (keywords.contains(tokenText)){
+                                tokens.add(new token("KEYWORD", tokenText ));
+
+                            }
+
+                    } else {
+                        tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
+                    }
+                } else {
+                    tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
+                }
+
+
+
 
             }
         }
@@ -86,7 +121,7 @@ public class lexer {
         //output management
         if (!tokens.isEmpty()) {
             for (int x=0; x < tokens.size(); x++)
-            tokenString = tokens.get(x).getToken();
+            tokenString += tokens.get(x).getToken();
         }
 
         String lexedString = errorText + "\n" + tokenString;
