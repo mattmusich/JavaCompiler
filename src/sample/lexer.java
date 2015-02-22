@@ -25,49 +25,45 @@ public class lexer {
         int forward = 1;
 
         for(int i=0; i < remainingText.length(); i++) {
-            if (Character.toString(baseString.charAt(i)).matches("[a-z]") && Character.toString(baseString.charAt(i+1)).matches("[a-z]")) {
-                switch ((baseString.charAt(i))) {
-                    case 'b': if (Character.toString(baseString.charAt(i+1)).matches("o")){
-                                if (Character.toString(baseString.charAt(i+1)).matches("o")){
-                                    if (Character.toString(baseString.charAt(i+1)).matches("l")){
-                                        if (Character.toString(baseString.charAt(i+1)).matches("e")){
-                                            if (Character.toString(baseString.charAt(i+1)).matches("a")){
-                                                if (Character.toString(baseString.charAt(i+1)).matches("n")){
-                                                    tokens.add(new token("type","boolean"));
-                                                 }
-                                            }
-                                        }
-                                    }
+            if (Character.toString(baseString.charAt(i)).matches("[{|}|(|)|\"|=|!|+]")) {
+                switch (baseString.charAt(i)) {
+                    case '{': tokens.add(new token("LBRACK","{")); break;
+                    case '}': tokens.add(new token("RBRACK","}")); break;
+                    case '(': tokens.add(new token("LPAREN","(")); break;
+                    case ')': tokens.add(new token("RPAREN",")")); break;
+                    case '"': tokens.add(new token("QUOTE","")); break;
+                    case '+': tokens.add(new token("PLUS","+")); break;
+                    case '=':
+                        //if the index is less than the length of the string then check, if not then its just an =
+                            if ( i+1 < baseString.length()) {
+                                if (Character.toString(baseString.charAt(i+1)).matches("=")) {
+                                    tokens.add(new token("DUBEQUALS", "=="));
+                                    i++;
+                                } else {
+                                    tokens.add(new token("EQUALS", "="));
                                 }
-                              } else { errorText += "Error at position: " + String.valueOf(i) + " Nonvaild Character";}
-                            break;
-                    case 'f':
-                            break;
-                    case 'i':
-                            break;
-                    case 'p':
-                            break;
-                    case 's':
-                            break;
-                    case 't':
-                            break;
-                    case 'w':
-                            break;
-                    default:
-                            break;
+                            } else {
+                                tokens.add(new token("EQUALS", "="));
+                            }
+                                break;
+                    case '!':
+                    // /if the index is less than the length of the string then check, if not then its an Error
+                                if ( i+1 < baseString.length()) {
+                                    if (Character.toString(baseString.charAt(i+1)).matches("=")) {
+                                        tokens.add(new token("NOTEQUALS", "!="));
+                                        i++;
+                                    } else {}
+                                }
+                                break;
 
                 }
 
-            } else if(Character.toString(baseString.charAt(i)).matches("[a-z]")) {
-
             } else if (Character.toString(baseString.charAt(i)).matches("[0-9]")) {
 
-            } else if (Character.toString(baseString.charAt(i)).matches("[{|}|(|)|\"|=|==|!=]")) {
+            } else if (Character.toString(baseString.charAt(i)).matches("[a-z]")) {
 
             }
-
         }
-
 
 
 
@@ -78,13 +74,8 @@ public class lexer {
                 Matcher m = p.matcher(remainingText);
                 if (m.find()) {
                     tokens.add(new token("type", "boolean"));
-                } else {
-
-                }
+                } else {}
             }
-
-
-
         }
 */
 
