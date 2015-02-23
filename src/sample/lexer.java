@@ -30,12 +30,13 @@ public class lexer {
         String remainingText = baseString;
         String currentText = "";
         String tokenText = "";
-        String errorText = "Errors: ";
+        String errorText = "Errors: NONE";
         String tokenString = "";
         int indexPlace = 0;
 
         for(int i=0; i < remainingText.length(); i++) {
-            //Symbol checking is all done
+
+            // STEP 1 Symbol checking is first
             if (Character.toString(baseString.charAt(i)).matches("[{|}|(|)|\"|=|!|+]")) {
                 switch (baseString.charAt(i)) {
                     case '{': tokens.add(new token("LBRACK","{")); break;
@@ -69,23 +70,37 @@ public class lexer {
 
                 }
 
+            // STEP 2 Digit checking
             } else if (Character.toString(baseString.charAt(i)).matches("[0-9]")) {
                 //To EZ
                     tokens.add(new token("DIGIT",Character.toString(baseString.charAt(i))));
 
+
+            //STEP 3 Alpha checking
             } else if (Character.toString(baseString.charAt(i)).matches("[a-z]")) {
                 //adds the first char to the tokenText
                 tokenText += Character.toString(baseString.charAt(i));
 
+                //check to see if the char is the last of the string
                 if ( i+1 < baseString.length()) {
                     if (Character.toString(baseString.charAt(i+1)).matches("[a-z]")) {
 
-                        //design some kind of loop to check all of the possibilities
-                            tokenText += Character.toString(baseString.charAt(i+1));
-                            if (keywords.contains(tokenText)){
-                                tokens.add(new token("KEYWORD", tokenText ));
+                       for (int j = 1; j <= 7; j++) {
+                           if (i + j < baseString.length()) {
+                               tokenText += Character.toString(baseString.charAt(i + j));
 
-                            }
+                               if (keywords.contains(tokenText)) {
+                                   tokens.add(new token("KEYWORD", tokenText));
+                                   i += j;
+                                   j = 8;
+                               } else {
+
+                                  //TODO This line has some minor issues i need to work out. Other than that it works well
+                                   //this line is painfull to the read. change an increment? reset an increment?
+                                  tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
+                               }
+                           }
+                       }
 
                     } else {
                         tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
@@ -93,11 +108,8 @@ public class lexer {
                 } else {
                     tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
                 }
-
-
-
-
             }
+
         }
 
 
