@@ -16,7 +16,7 @@ public class MainController {
         // Button was clicked, do something...
 
         String baseString = taInput.getText().trim();
-        String lexedString = lexer.lexercise(baseString);
+        String lexedString = lexer.lexercise(baseString + "$");
         taOutput.appendText(lexedString + "\n");
 
         /*

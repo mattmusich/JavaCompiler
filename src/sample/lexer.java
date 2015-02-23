@@ -5,14 +5,13 @@ import java.util.*;
 import java.util.regex.*;
 import java.lang.Enum;
 
-
+//does all the lex to token operations
 public class lexer {
-
-
-
     // This will loop through input to determine tokens
+    // Im stupid and didn't divide up the functions and got carried away.
     public static String lexercise(String baseString){
 
+        //Keyword arraylist building
         ArrayList<token> tokens = new ArrayList<token>();
         ArrayList<String> keywords = new ArrayList<String>();
         keywords.add("boolean");
@@ -24,15 +23,11 @@ public class lexer {
         keywords.add("true");
         keywords.add("while");
 
-
-        // MY Strings
-        String pastText = "";
+        //Defined Strings
         String remainingText = baseString;
-        String currentText = "";
         String tokenText = "";
         String errorText = "Errors: NONE";
         String tokenString = "";
-        int indexPlace = 0;
 
         for(int i=0; i < remainingText.length(); i++) {
 
@@ -78,64 +73,71 @@ public class lexer {
 
             //STEP 3 Alpha checking
             } else if (Character.toString(baseString.charAt(i)).matches("[a-z]")) {
-                //adds the first char to the tokenText
-                tokenText += Character.toString(baseString.charAt(i));
 
-                //check to see if the char is the last of the string
+                //check to see if the char is the last of the string in it is make a new token for the "i" character
                 if ( i+1 < baseString.length()) {
+                    //if the next character is not a letter it makes a token for "i", otherwise it continues the keyword check
                     if (Character.toString(baseString.charAt(i+1)).matches("[a-z]")) {
 
-                       for (int j = 1; j <= 7; j++) {
+                        //This loop is an incrementer for lookahead, check the systemlog for how it kinda works
+                        for (int j = 1; j <= 6; j++) {
                            if (i + j < baseString.length()) {
-                               tokenText += Character.toString(baseString.charAt(i + j));
 
+                               //only adds the "i" position character on the first time the lookahead is active
+                               if (j == 1 ){
+                                   tokenText += Character.toString(baseString.charAt(i));
+                               }
+
+                               //adds each value at "j" of the lookahead
+                               tokenText += Character.toString(baseString.charAt(i + j));
+                               System.out.println("lookahead: " +tokenText);
+
+
+                               //-checks if the tokenText is directly equal to the kewords list
+                               //-if it is it resets the lookahead
+                               //-if it is not it checks if it is the last lookahead increment (6) and creates a token for "i"
+                               //    and resets the tokenText for the next lookahead loop at i++
                                if (keywords.contains(tokenText)) {
                                    tokens.add(new token("KEYWORD", tokenText));
+                                   System.out.println("KW TOKEN MADE: " + tokenText);
                                    i += j;
                                    j = 8;
-                               } else {
+                                   tokenText = "";
 
-                                  //TODO This line has some minor issues i need to work out. Other than that it works well
-                                   //this line is painfull to the read. change an increment? reset an increment?
-                                  tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
+                               } else {
+                                    if(j == 6){
+                                        System.out.println("ID TOKEN MADE: " + Character.toString(baseString.charAt(i)));
+                                        tokenText="";
+                                        tokens.add(new token("ID",Character.toString(baseString.charAt(i))));
+                                    }
+
+                                    //checks my current increment positions( really for debugging)
+                                   System.out.println("i: " + i);
+                                   System.out.println("j: " + j);
                                }
                            }
                        }
-
                     } else {
+                        //if character after i is not a letter
                         tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
                     }
                 } else {
+                    //if no character after i
                     tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
                 }
-            }
-
-        }
-
-
-
-/*
-        for(int i=0; i < remainingText.length(); i++) {
-            if (Character.toString(baseString.charAt(i)).matches("b")) {
-                Pattern p = Pattern.compile("boolean");
-                Matcher m = p.matcher(remainingText);
-                if (m.find()) {
-                    tokens.add(new token("type", "boolean"));
-                } else {}
+                //if the $ is found it is the end of the file
+            } else if (Character.toString(baseString.charAt(i)).matches("$")){
+                i= remainingText.length();
             }
         }
-*/
 
-
-
-
-
-        //output management
+        //output management, loops through all tokens in the Arraylist and sets them to tokenString
         if (!tokens.isEmpty()) {
             for (int x=0; x < tokens.size(); x++)
             tokenString += tokens.get(x).getToken();
         }
 
+        //builds the return value to the controller taking in all errors and an output of lexer tokens
         String lexedString = errorText + "\n" + tokenString;
         return lexedString;
     }
