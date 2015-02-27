@@ -5,45 +5,45 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
+
 public class MainController {
     @FXML
     private TextArea taInput;
     @FXML
     private TextArea taOutput;
 
+    //Starts the lexing when pressed, and will run the parsing too
     @FXML
     private void onLexButtonPress(ActionEvent event) {
         // Button was clicked, do something...
 
         String baseString = taInput.getText().trim();
-        String lexedString = lexer.lexercise(baseString + "$");
-        taOutput.appendText(lexedString + "\n");
 
-        /*
-        String noSpaces = "";
-        int count = 0;
+        ArrayList<token> lexerTokens = lexer.lexercise(baseString + "$");
 
-        for(int i=0; i < baseString.length(); i++){
-            if (baseString.charAt(i) == ' '){
-                count++;
-            } else {
-                noSpaces += baseString.charAt(i);
-            }
-        }
+        String lexedString = tokenToSting(lexerTokens);
 
+        String parsedString = parser.initParse(lexerTokens);
 
-        token test1 = new token("","");
-        token test2 = new token("Expr","=");
-
-        test1.setTokenType("Type");
-        test1.setTokenData("Data");
-
-        taOutput.appendText(noSpaces + "\n" + count + "\n");
-        taOutput.appendText(test1.getToken() + "\n");
-        taOutput.appendText(test2.getToken() + "\n");
-        */
-
+        taOutput.appendText("Lexer: \n" + lexedString + "\nParser: \n" + parsedString + "\n");
 
 
     }
+
+    //meant for output of the tokens that get send
+    public String tokenToSting(ArrayList<token> sentTokens) {
+
+        String tokenString = "";
+        ArrayList<token> tokens = sentTokens;
+
+        if (!tokens.isEmpty()) {
+            for (int x=0; x < tokens.size(); x++)
+                tokenString += tokens.get(x).getToken();
+        }
+        return tokenString;
+
+    }
+
+
 }

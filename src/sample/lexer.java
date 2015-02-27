@@ -9,7 +9,7 @@ import java.lang.Enum;
 public class lexer {
     // This will loop through input to determine tokens
     // Im stupid and didn't divide up the functions and got carried away.
-    public static String lexercise(String baseString){
+    public static ArrayList lexercise(String baseString){
 
         //Keyword arraylist building
         ArrayList<token> tokens = new ArrayList<token>();
@@ -62,16 +62,18 @@ public class lexer {
                                     } else {}
                                 }
                                 break;
-
                 }
+                System.out.println("SYM TOKEN MADE: " + tokenText);
 
             // STEP 2 Digit checking
             } else if (Character.toString(baseString.charAt(i)).matches("[0-9]")) {
                 //To EZ
                     tokens.add(new token("DIGIT",Character.toString(baseString.charAt(i))));
+                    System.out.println("DIGIT TOKEN MADE: " + tokenText);
 
 
-            //STEP 3 Alpha checking
+
+                //STEP 3 Alpha checking
             } else if (Character.toString(baseString.charAt(i)).matches("[a-z]")) {
 
                 //check to see if the char is the last of the string in it is make a new token for the "i" character
@@ -112,8 +114,8 @@ public class lexer {
                                     }
 
                                     //checks my current increment positions( really for debugging)
-                                   System.out.println("i: " + i);
-                                   System.out.println("j: " + j);
+                                   //System.out.println("i: " + i);
+                                   //System.out.println("j: " + j);
                                }
                            }
                        }
@@ -127,6 +129,7 @@ public class lexer {
                 }
                 //if the $ is found it is the end of the file
             } else if (Character.toString(baseString.charAt(i)).matches("$")){
+                tokens.add(new token("EOF", "$"));
                 i= remainingText.length();
             }
         }
@@ -139,7 +142,8 @@ public class lexer {
 
         //builds the return value to the controller taking in all errors and an output of lexer tokens
         String lexedString = errorText + "\n" + tokenString;
-        return lexedString;
+
+        return tokens;
     }
 
 
