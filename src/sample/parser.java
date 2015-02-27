@@ -40,13 +40,13 @@ public class parser {
         System.out.println("current Data: "+ current.getTokenData());
 
         if (current.getTokenType().equals(testCase)) {
-            if (current.getTokenType().equals("LPAREN") || current.getTokenType().equals("LBRACK") || current.getTokenType().equals("QUOTE")) {
-                System.out.println("matched made it in");
-                tokenStack.add(current);
-            } else {}
+            //if (current.getTokenType().equals("LPAREN") || current.getTokenType().equals("LBRACK") || current.getTokenType().equals("QUOTE")) {
+             //   System.out.println("matched made it in");
+                //tokenStack.add(current); //TODO MAKE THIS CHANGE
+           // } else {}
         } else {
             System.out.println("Expecting: " + testCase + " got " + current.getTokenType());
-            errorString += "\nError at token: " + current.getToken() + " #Expecting: " + testCase + " got " + current.getTokenType() ;
+            errorString += "\nError at token: " + current.getToken() + " #Expecting: " + testCase + " got " + current.getTokenType();
 
         }
 
@@ -79,6 +79,7 @@ public class parser {
         if (tokenStack.size() > 1){
             tokenStack =  parseBlock(tokenStack);
         }
+        //TODO check for error
 
         return tokenStack;
     }
@@ -98,14 +99,18 @@ public class parser {
     //checks to make sure that the current token is not the closing brace, which would denote that the braces are empty, thus the recursive call will not go deeper
     public static Queue<token> parseStatementList(Queue<token> tokenStack){
 
-        token current = tokenStack.remove();
-        System.out.println("StatementList " +current.getToken());
+        if (tokenStack.size() != 0) {
+            token current = tokenStack.peek(); //TODO MAKE THIS CHANGE
+            System.out.println("StatementList " + current.getToken());
 
+            if (!current.getTokenType().equals("RBRACK")) {
+                tokenStack = parseStatement(tokenStack);
+                tokenStack = parseStatementList(tokenStack); //TODO SUPER BROKEN need to remove the first value to continue
+            } else {
 
-        if (!current.getTokenType().equals("RBRACK")) {
-            tokenStack = parseStatement(tokenStack);
-            tokenStack = parseStatementList(tokenStack); //TODO SUPER BROKEN need to remove the first value to continue
-        } else {}
+                //escape the situation when the tokens run out????
+            }
+        }
 
         return tokenStack;
     }
@@ -138,13 +143,13 @@ public class parser {
 
     public static Queue<token> parsePrint(Queue<token> tokenStack){
 
-        tokenStack = match("print", tokenStack);
+        tokenStack = match("KEYWORD", tokenStack);
 
-        tokenStack = match("(", tokenStack);
+        tokenStack = match("LPAREN", tokenStack);
 
         tokenStack = parseExpr(tokenStack);
 
-        tokenStack = match(")", tokenStack);
+        tokenStack = match("RPAREN", tokenStack);
 
         return tokenStack;
     }
