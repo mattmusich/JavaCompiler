@@ -37,7 +37,7 @@ public class lexer {
                     case '}': tokens.add(new token("RBRACK","}")); break;
                     case '(': tokens.add(new token("LPAREN","(")); break;
                     case ')': tokens.add(new token("RPAREN",")")); break;
-                    case '"': tokens.add(new token("QUOTE","")); break;
+                    case '"': tokens.add(new token("QUOTE","\"")); break;
                     case '+': tokens.add(new token("PLUS","+")); break;
                     case '=':
                         //if the index is less than the length of the string then check, if not then its just an =
@@ -72,7 +72,7 @@ public class lexer {
 
 
 
-                //STEP 3 Alpha checking
+            //STEP 3 Alpha checking
             } else if (Character.toString(baseString.charAt(i)).matches("[a-z]")) {
 
                 //check to see if the char is the last of the string in it is make a new token for the "i" character
@@ -129,7 +129,7 @@ public class lexer {
                 //if the $ is found it is the end of the file
             } else if (Character.toString(baseString.charAt(i)).matches("$")){
                 tokens.add(new token("EOF", "$"));
-                i= remainingText.length();
+                i = remainingText.length();
             }
         }
 

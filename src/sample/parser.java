@@ -6,6 +6,10 @@ import java.util.Queue;
 import java.util.Stack;
 
 public class parser {
+
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RESET = "\u001B[0m";
+
     static String errorString = "";
     public static String initParse(ArrayList<token> sentTokens){
 
@@ -40,10 +44,8 @@ public class parser {
         System.out.println("current Data: "+ current.getTokenData());
 
         if (current.getTokenType().equals(testCase)) {
-            //if (current.getTokenType().equals("LPAREN") || current.getTokenType().equals("LBRACK") || current.getTokenType().equals("QUOTE")) {
-             //   System.out.println("matched made it in");
-                //tokenStack.add(current); //TODO MAKE THIS CHANGE
-           // } else {}
+            System.out.println(ANSI_GREEN + "CASE: " + testCase + " PASSED: " + current.getToken() + ANSI_RESET);
+
         } else {
             System.out.println("Expecting: " + testCase + " got " + current.getTokenType());
             errorString += "\nError at token: " + current.getToken() + " #Expecting: " + testCase + " got " + current.getTokenType();
@@ -79,7 +81,6 @@ public class parser {
         if (tokenStack.size() > 1){
             tokenStack =  parseBlock(tokenStack);
         }
-        //TODO check for error
 
         return tokenStack;
     }
@@ -100,12 +101,12 @@ public class parser {
     public static Queue<token> parseStatementList(Queue<token> tokenStack){
 
         if (tokenStack.size() != 0) {
-            token current = tokenStack.peek(); //TODO MAKE THIS CHANGE
+            token current = tokenStack.peek();
             System.out.println("StatementList " + current.getToken());
 
             if (!current.getTokenType().equals("RBRACK")) {
                 tokenStack = parseStatement(tokenStack);
-                tokenStack = parseStatementList(tokenStack); //TODO SUPER BROKEN need to remove the first value to continue
+                tokenStack = parseStatementList(tokenStack); //TODO IF broken check the types on the current.equals
             } else {
 
                 //escape the situation when the tokens run out????
@@ -123,15 +124,15 @@ public class parser {
 
         if (current.getTokenData().equals("print")){
             tokenStack = parsePrint(tokenStack);
-        } else if (current.getTokenData().equals("ID")){
+        } else if (current.getTokenType().equals("ID")){ //THIS is a type not data
             tokenStack = parseAssignment(tokenStack);
-        } else if (current.getTokenData().equals("int")){ //TODO or string or bool
+        } else if (current.getTokenData().equals("int") || current.getTokenData().equals("string") || current.getTokenData().equals("boolean") ){ //TODO or string or bool??
             tokenStack = parseVarDecl(tokenStack);
         } else if (current.getTokenData().equals("while")){
             tokenStack = parseWhile(tokenStack);
         } else if (current.getTokenData().equals("if")){
             tokenStack = parseIf(tokenStack);
-        } else if (current.getTokenData().equals("LBRACK")){
+        } else if (current.getTokenType().equals("LBRACK")){ //THIS is a type not data
             tokenStack = parseBlock(tokenStack);
         } else {
             errorString += "\nError at token: " + current.getToken() + " #Expecting: print, ID, int, while, if or Left Bracket, but got " + current.getTokenType();
@@ -156,9 +157,11 @@ public class parser {
 
     public static Queue<token> parseAssignment(Queue<token> tokenStack){
 
+        System.out.println("Assignment");
+
         tokenStack = parseID(tokenStack);
 
-        tokenStack = match("DUBEQUALS", tokenStack);
+        tokenStack = match("EQUALS", tokenStack);
 
         tokenStack = parseExpr(tokenStack);
 
@@ -178,9 +181,9 @@ public class parser {
     public static Queue<token> parseExpr(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
-        System.out.println("Expr " +current.getToken());
+        System.out.println("Expr " + current.getToken());
 
-        if (current.getTokenType().equals("Digit")){
+        if (current.getTokenType().equals("DIGIT")){
             tokenStack = parseIntExpr(tokenStack);
         } else if (current.getTokenType().equals("QUOTE")){
             tokenStack = parseStringExpr(tokenStack);
@@ -215,7 +218,7 @@ public class parser {
 
         tokenStack = parseCharacterList(tokenStack);
 
-        tokenStack = match("Quote",tokenStack);
+        tokenStack = match("QUOTE",tokenStack);
 
         return tokenStack;
     }
@@ -258,11 +261,12 @@ public class parser {
         token current = tokenStack.peek();
         System.out.println("BooleanOp " + current.getToken());
 
-        if(current.getTokenType().equals("EQUALS") || current.getTokenType().equals("NOTEQUALS")){
+        if(current.getTokenType().equals("EQUALS")){
             tokenStack = match("EQUALS",tokenStack);
+        } else if (current.getTokenType().equals("NOTEQUALS")){
+            tokenStack = match("NOTEQUALS",tokenStack);
         } else {
             errorString += "\nError at token: " + current.getToken() + " #Expecting: == or !=, but got " + current.getTokenType();
-
         }
 
         return tokenStack;
@@ -270,6 +274,7 @@ public class parser {
 
     public static Queue<token> parseID(Queue<token> tokenStack){
 
+        System.out.println("ID");
         tokenStack = match("ID",tokenStack);
 
         return tokenStack;
@@ -277,7 +282,7 @@ public class parser {
 
     public static Queue<token> parseWhile(Queue<token> tokenStack){
 
-        tokenStack = match("while",tokenStack);
+        tokenStack = match("KEYWORD",tokenStack);
 
         tokenStack = parseBooleanExpr(tokenStack);
 
