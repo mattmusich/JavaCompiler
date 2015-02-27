@@ -1,23 +1,30 @@
 package sample;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 public class parser {
 
     //init
     String errorString = "";
+    
 
     public static String initParse(ArrayList<token> sentTokens){
 
         //set tokens to the token output from the lexer
         ArrayList<token> tokens = sentTokens;
 
-        Stack<token> tokenStack= new Stack<token>();
 
+        Queue<token> tokenStack = new LinkedList<token>();
+
+        //Stack creation
         if (!tokens.isEmpty()) {
-            for (int x=0; x < tokens.size(); x++)
-                tokenStack.add(tokens.get(1));
+            for (int x = 0; x < tokens.size(); x++) {
+                tokenStack.add(tokens.get(x));
+                System.out.println(tokens.get(x).getToken());
+            }
         }
 
         //The print just for checking
@@ -30,29 +37,31 @@ public class parser {
     }
 
     //This will check if the current token is the same as the "testCase" sent
-    public static Stack<token> match(String testCase, Stack<token> tokenStack){
+    public static Queue<token> match(String testCase, Queue<token> tokenStack){
 
-        token current = tokenStack.pop();
-        System.out.println("Match Type: "+ current.getTokenType());
-        System.out.println("Match Data: "+ current.getTokenType());
+        token current = tokenStack.remove();
+        System.out.println("current Type: "+ current.getTokenType());
+        System.out.println("current Data: "+ current.getTokenData());
 
         if (current.getTokenType().equals(testCase)) {
             if (current.getTokenType().equals("LPAREN") || current.getTokenType().equals("LBRACK") || current.getTokenType().equals("QUOTE")) {
-                System.out.println(tokenStack.toString() + "matched made it in");
-                tokenStack.push(current);
+                System.out.println("matched made it in");
+                tokenStack.add(current);
             } else {}
         } else {
             //error out not wht expected
-            System.out.println("Expecting: " + testCase + " got" + current.getTokenType());
-            System.out.println("TOKEN STACK " + tokenStack.toString());
+            System.out.println("Expecting: " + testCase + " got " + current.getTokenType());
+
+            //System.exit(1);
         }
 
-        System.out.println("Match finished");
+
+        System.out.println(testCase + ": Match finished");
         return tokenStack;
     }
 
     //Calls the first recursive piece -> parseProgram
-    public static void parse(Stack<token> tokenStack){
+    public static void parse(Queue<token> tokenStack){
 
         System.out.println("PARSER IS STARTING: \n \n");
 
@@ -62,7 +71,7 @@ public class parser {
     }
 
     //Calls parseBlock if there is at least 2 tokens i.e. ({) (int)
-    public static Stack<token> parseProgram(Stack<token> tokenStack){
+    public static Queue<token> parseProgram(Queue<token> tokenStack){
 
         if (tokenStack.size() > 1){
           tokenStack =  parseBlock(tokenStack);
@@ -72,7 +81,7 @@ public class parser {
     }
 
     //calls parseStatementList if there is bracket infront of it, then after the recursive call checks the second bracket
-    public static Stack<token> parseBlock(Stack<token> tokenStack){
+    public static Queue<token> parseBlock(Queue<token> tokenStack){
 
         tokenStack = match("LBRACK", tokenStack);
 
@@ -84,7 +93,7 @@ public class parser {
     }
 
     //checks to make sure that the current token is not the closing brace, which would denote that the braces are empty, thus the recursive call will not go deeper
-    public static Stack<token> parseStatementList(Stack<token> tokenStack){
+    public static Queue<token> parseStatementList(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
 
@@ -97,7 +106,7 @@ public class parser {
     }
 
 
-    public static Stack<token> parseStatement(Stack<token> tokenStack){
+    public static Queue<token> parseStatement(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
 
@@ -121,7 +130,7 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parsePrint(Stack<token> tokenStack){
+    public static Queue<token> parsePrint(Queue<token> tokenStack){
 
         tokenStack = match("print", tokenStack);
 
@@ -134,7 +143,7 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parseAssignment(Stack<token> tokenStack){
+    public static Queue<token> parseAssignment(Queue<token> tokenStack){
 
         tokenStack = parseID(tokenStack);
 
@@ -145,7 +154,7 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parseVarDecl(Stack<token> tokenStack){
+    public static Queue<token> parseVarDecl(Queue<token> tokenStack){
 
         tokenStack = match("TYPE", tokenStack);
 
@@ -155,7 +164,7 @@ public class parser {
     }
 
 
-    public static Stack<token> parseExpr(Stack<token> tokenStack){
+    public static Queue<token> parseExpr(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
 
@@ -174,7 +183,7 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parseIntExpr(Stack<token> tokenStack){
+    public static Queue<token> parseIntExpr(Queue<token> tokenStack){
 
         tokenStack = match("DIGIT",tokenStack);
 
@@ -187,7 +196,7 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parseStringExpr(Stack<token> tokenStack){
+    public static Queue<token> parseStringExpr(Queue<token> tokenStack){
 
         tokenStack = match("QUOTE",tokenStack);
 
@@ -198,7 +207,7 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parseCharacterList(Stack<token> tokenStack){
+    public static Queue<token> parseCharacterList(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
 
@@ -210,7 +219,7 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parseBooleanExpr(Stack<token> tokenStack){
+    public static Queue<token> parseBooleanExpr(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
 
@@ -229,7 +238,7 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parseBooleanOp(Stack<token> tokenStack){
+    public static Queue<token> parseBooleanOp(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
 
@@ -242,14 +251,14 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parseID(Stack<token> tokenStack){
+    public static Queue<token> parseID(Queue<token> tokenStack){
 
         tokenStack = match("ID",tokenStack);
 
         return tokenStack;
     }
 
-    public static Stack<token> parseWhile(Stack<token> tokenStack){
+    public static Queue<token> parseWhile(Queue<token> tokenStack){
 
         tokenStack = match("while",tokenStack);
 
@@ -260,7 +269,7 @@ public class parser {
         return tokenStack;
     }
 
-    public static Stack<token> parseIf(Stack<token> tokenStack){
+    public static Queue<token> parseIf(Queue<token> tokenStack){
 
         tokenStack = match("if",tokenStack);
 

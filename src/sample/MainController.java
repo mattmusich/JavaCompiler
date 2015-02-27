@@ -26,7 +26,9 @@ public class MainController {
 
         String parsedString = parser.initParse(lexerTokens);
 
-        taOutput.appendText("Lexer: \n" + lexedString + "\nParser: \n" + parsedString + "\n");
+        taOutput.appendText("Lexer Tokens: \n" + lexedString + "\n");
+
+        taOutput.appendText("Parse Statement: \n" + parsedString + "\n");
 
 
     }
