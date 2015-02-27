@@ -9,7 +9,7 @@
    <children>
       <TextArea id="taInput" fx:id="taInput" layoutX="28.0" layoutY="36.0" prefHeight="510.0" prefWidth="415.0" />
       <TextArea id="taOutput" fx:id="taOutput" layoutX="457.0" layoutY="36.0" prefHeight="510.0" prefWidth="415.0" wrapText="true"/>
-      <Button id="btnLex" fx:id="btnLex" layoutX="28.0" layoutY="561.0" mnemonicParsing="false" onAction="#onLexButtonPress" prefHeight="25.0" prefWidth="83.0" text="Lexercise" />
+      <Button id="btnLex" fx:id="btnLex" layoutX="28.0" layoutY="561.0" mnemonicParsing="false" onAction="#onLexButtonPress" prefHeight="25.0" prefWidth="83.0" text="Lexercise/Parse" />
       <Text layoutX="28.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Input" />
       <Text layoutX="457.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Output" />
    </children>

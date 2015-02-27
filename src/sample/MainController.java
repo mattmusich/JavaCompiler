@@ -28,7 +28,7 @@ public class MainController {
 
         taOutput.appendText("Lexer Tokens: \n" + lexedString + "\n");
 
-        taOutput.appendText("Parse Statement: \n" + parsedString + "\n");
+        taOutput.appendText("\nParse Status: \n" + parsedString + "\n");
 
 
     }
