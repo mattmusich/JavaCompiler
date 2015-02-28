@@ -72,8 +72,8 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.3" vertical-offset="0" max-vertical-offset="714">
-              <caret line="27" column="87" selection-start-line="27" selection-start-column="87" selection-end-line="27" selection-end-column="87" />
+            <state vertical-scroll-proportion="-18.133333" vertical-offset="136" max-vertical-offset="799">
+              <caret line="40" column="7" selection-start-line="40" selection-start-column="7" selection-end-line="40" selection-end-column="7" />
               <folding />
             </state>
           </provider>
@@ -83,17 +83,17 @@
         <entry file="file://$PROJECT_DIR$/src/sample/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-              <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+              <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainController.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainController.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/sample/MainController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="918">
-              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7502691" vertical-offset="0" max-vertical-offset="1105">
+              <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -109,13 +109,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="lexer.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="lexer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/sample/lexer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.62432724" vertical-offset="491" max-vertical-offset="3162">
-              <caret line="63" column="45" selection-start-line="63" selection-start-column="45" selection-end-line="63" selection-end-column="45" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3162">
+              <caret line="154" column="21" selection-start-line="154" selection-start-column="21" selection-end-line="154" selection-end-column="21" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#427#434#0" expanded="true" />
+                <element signature="e#488#496#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -146,10 +148,10 @@
         <option value="$PROJECT_DIR$/src/sample/Controller.java" />
         <option value="$PROJECT_DIR$/src/sample/token.java" />
         <option value="$PROJECT_DIR$/src/sample/Main.java" />
-        <option value="$PROJECT_DIR$/src/sample/Layout.fxml" />
-        <option value="$PROJECT_DIR$/src/sample/MainController.java" />
         <option value="$PROJECT_DIR$/src/sample/parser.java" />
         <option value="$PROJECT_DIR$/src/sample/lexer.java" />
+        <option value="$PROJECT_DIR$/src/sample/Layout.fxml" />
+        <option value="$PROJECT_DIR$/src/sample/MainController.java" />
       </list>
     </option>
   </component>
@@ -551,6 +553,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#427#434#0" expanded="true" />
+            <element signature="e#488#496#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -596,6 +600,8 @@
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#427#434#0" expanded="true" />
+            <element signature="e#488#496#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -641,6 +647,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#427#434#0" expanded="true" />
+            <element signature="e#488#496#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -686,6 +694,8 @@
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#427#434#0" expanded="true" />
+            <element signature="e#488#496#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -731,6 +741,8 @@
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#427#434#0" expanded="true" />
+            <element signature="e#488#496#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -768,6 +780,8 @@
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#427#434#0" expanded="true" />
+            <element signature="e#488#496#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -805,6 +819,8 @@
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#427#434#0" expanded="true" />
+            <element signature="e#488#496#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -842,6 +858,8 @@
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#427#434#0" expanded="true" />
+            <element signature="e#488#496#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -938,14 +956,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/sample/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/token.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="227" max-vertical-offset="1445">
@@ -954,29 +964,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/sample/Layout.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.3" vertical-offset="0" max-vertical-offset="714">
-          <caret line="27" column="87" selection-start-line="27" selection-start-column="87" selection-end-line="27" selection-end-column="87" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files (x86)/Java/jdk1.8.0_31/javafx-src.zip!/com/sun/javafx/tk/quantum/GlassViewEventHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.58880514" vertical-offset="4995" max-vertical-offset="18513">
           <caret line="383" column="0" selection-start-line="383" selection-start-column="0" selection-end-line="383" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/sample/MainController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="918">
-          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -993,11 +984,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/lexer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.62432724" vertical-offset="491" max-vertical-offset="3162">
-          <caret line="63" column="45" selection-start-line="63" selection-start-column="45" selection-end-line="63" selection-end-column="45" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3162">
+          <caret line="154" column="21" selection-start-line="154" selection-start-column="21" selection-end-line="154" selection-end-column="21" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#427#434#0" expanded="true" />
+            <element signature="e#488#496#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sample/Layout.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-18.133333" vertical-offset="136" max-vertical-offset="799">
+          <caret line="40" column="7" selection-start-line="40" selection-start-column="7" selection-end-line="40" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sample/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
+          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sample/MainController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7502691" vertical-offset="0" max-vertical-offset="1105">
+          <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -16,6 +16,7 @@ public class MainController {
     @FXML
     private TextArea taTokens;
 
+
     //Starts the lexing when pressed, and will run the parsing too
     @FXML
     private void onLexButtonPress(ActionEvent event) {
@@ -33,6 +34,16 @@ public class MainController {
 
         taOutput.appendText("Parse Status: \n" + parsedString + "\n");
 
+
+    }
+
+    @FXML
+    private void onCase1ButtonPress(ActionEvent event){
+        taInput.appendText("{intaa=1\n" +
+                "print(a)stringb  b = \"Hey Alan\"\n" +
+                "if(b == \"Hey Alan\"){\n" +
+                "print(b)\n" +
+                "}}");
 
     }
 
