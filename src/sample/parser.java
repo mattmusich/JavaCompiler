@@ -228,8 +228,8 @@ public class parser {
         token current = tokenStack.peek();
         System.out.println("CharacterList " + current.getToken());
 
-        if(current.getTokenType().equals("ID")){
-            tokenStack = match("ID",tokenStack);
+        if(current.getTokenType().equals("CHAR")){ //TODO >????
+            tokenStack = match("CHAR",tokenStack);
             tokenStack = parseCharacterList(tokenStack);
         }
 

@@ -39,15 +39,32 @@ public class lexer {
                     case '(': tokens.add(new token("LPAREN","(")); break;
                     case ')': tokens.add(new token("RPAREN",")")); break;
                     case '"': tokens.add(new token("QUOTE","\""));
+                                System.out.println("Quote found");
                                 //check to make sure the next char is not a "
-                                if (!Character.toString(baseString.charAt(i+1)).matches("\"")){
+                                if (Character.toString(baseString.charAt(i+1)).matches("\"")){
+                                    tokens.add(new token("STRING", ""));
+                                    System.out.println("Quote empty");
+                                } else {
+                                    System.out.println("Quote else hit");
                                     //Loop through a forward set that adds to i and keep going till the char is "
-                                    int adder = 1;
-                                    while(!Character.toString(baseString.charAt(i+adder)).matches("\"")){
-                                        builtString += Character.toString(baseString.charAt(i+adder));
-                                        adder++;
+                                    for (int adder = 1; adder <= baseString.length(); adder++ ){
+                                        System.out.println("in quote loop");
+                                        if(Character.toString(baseString.charAt(i + adder)).matches("\"")) {
+                                            //tokens.add(new token("STRING", builtString));  STRINGS??
+                                            tokens.add(new token("QUOTE","\""));
+                                            i = i + adder;
+                                            System.out.println("String made " + builtString);
+                                            adder = baseString.length()+1;
+                                        } else {
+                                            System.out.println("Character added to quote");
+                                            if(Character.toString(baseString.charAt(i + adder)).matches(" ")){
+                                                tokens.add(new token("CHAR", " "));
+                                            } else {
+                                                tokens.add(new token("CHAR", Character.toString(baseString.charAt(i + adder))));
+                                            }
+                                            //builtString += Character.toString(baseString.charAt(i + adder)); STRINGS??
+                                        }
                                     }
-                                    tokens.add(new token("STRING", builtString));
                                     builtString = "";
                                 }
 
