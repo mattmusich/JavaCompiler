@@ -25,7 +25,7 @@
       </Text>
       <Pane prefHeight="731.0" prefWidth="167.0" style="-fx-background-color: #1d1d1d;">
          <children>
-            <Button id="btnLex" fx:id="btnLex" mnemonicParsing="false" onAction="#onLexButtonPress" onMouseEntered="#onButtonEnter" onMouseExited="#onButtonExit" prefHeight="50.0" prefWidth="167.0" style="-fx-background-color: #1d1d1d;" text="Parse" textFill="WHITE">
+            <Button id="btnLex" fx:id="btnLex" mnemonicParsing="false" onAction="#onLexButtonPress" prefHeight="50.0" prefWidth="167.0" style="-fx-background-color: #1d1d1d;" text="Parse" textFill="WHITE">
                <font>
                   <Font name="Segoe UI" size="15.0" />
                </font>
