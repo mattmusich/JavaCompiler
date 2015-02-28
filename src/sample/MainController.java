@@ -15,8 +15,6 @@ public class MainController {
     private TextArea taOutput;
     @FXML
     private TextArea taTokens;
-    @FXML
-    private Button btnLex;
 
     //Starts the lexing when pressed, and will run the parsing too
     @FXML
@@ -37,7 +35,6 @@ public class MainController {
 
 
     }
-
 
 
     //meant for output of the tokens that get send

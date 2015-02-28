@@ -8,7 +8,7 @@ import java.lang.Enum;
 public class lexer {
     // This will loop through input to determine tokens
     // Im stupid and didn't divide up the functions and got carried away.
-    public static ArrayList lexercise(String baseString){
+    public static ArrayList<token> lexercise(String baseString){
 
         //Keyword arraylist building
         ArrayList<token> tokens = new ArrayList<token>();
@@ -27,6 +27,7 @@ public class lexer {
         String tokenText = "";
         String errorText = "Errors: NONE";
         String tokenString = "";
+        String builtString = "";
 
         for(int i=0; i < remainingText.length(); i++) {
 
@@ -37,7 +38,20 @@ public class lexer {
                     case '}': tokens.add(new token("RBRACK","}")); break;
                     case '(': tokens.add(new token("LPAREN","(")); break;
                     case ')': tokens.add(new token("RPAREN",")")); break;
-                    case '"': tokens.add(new token("QUOTE","\"")); break;
+                    case '"': tokens.add(new token("QUOTE","\""));
+                                //check to make sure the next char is not a "
+                                if (!Character.toString(baseString.charAt(i+1)).matches("\"")){
+                                    //Loop through a forward set that adds to i and keep going till the char is "
+                                    int adder = 1;
+                                    while(!Character.toString(baseString.charAt(i+adder)).matches("\"")){
+                                        builtString += Character.toString(baseString.charAt(i+adder));
+                                        adder++;
+                                    }
+                                    tokens.add(new token("STRING", builtString));
+                                    builtString = "";
+                                }
+
+                              break;
                     case '+': tokens.add(new token("PLUS","+")); break;
                     case '=':
                         //if the index is less than the length of the string then check, if not then its just an =
