@@ -41,7 +41,7 @@ public class MainController {
 
         if (!tokens.isEmpty()) {
             for (int x=0; x < tokens.size(); x++)
-                tokenString += tokens.get(x).getToken();
+                tokenString += tokens.get(x).getToken() + "\n";
         }
         return tokenString;
 
