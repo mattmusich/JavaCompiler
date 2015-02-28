@@ -2,6 +2,7 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 
@@ -12,6 +13,10 @@ public class MainController {
     private TextArea taInput;
     @FXML
     private TextArea taOutput;
+    @FXML
+    private TextArea taTokens;
+    @FXML
+    private Button btnLex;
 
     //Starts the lexing when pressed, and will run the parsing too
     @FXML
@@ -26,12 +31,14 @@ public class MainController {
 
         String parsedString = parser.initParse(lexerTokens);
 
-        taOutput.appendText("Lexer Tokens: \n" + lexedString + "\n");
+        taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
 
-        taOutput.appendText("\nParse Status: \n" + parsedString + "\n");
+        taOutput.appendText("Parse Status: \n" + parsedString + "\n");
 
 
     }
+
+
 
     //meant for output of the tokens that get send
     public String tokenToSting(ArrayList<token> sentTokens) {

@@ -23,7 +23,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("Layout.fxml"));
         primaryStage.setTitle("Musich Compiler");
-        primaryStage.setScene(new Scene(root, 900, 600));
+        primaryStage.setScene(new Scene(root, 1060, 725));
         primaryStage.show();
 
 

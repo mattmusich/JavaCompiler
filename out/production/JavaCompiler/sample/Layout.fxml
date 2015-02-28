@@ -5,12 +5,32 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MainController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="725.0" prefWidth="1060.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MainController">
    <children>
-      <TextArea id="taInput" fx:id="taInput" layoutX="28.0" layoutY="36.0" prefHeight="510.0" prefWidth="415.0" />
-      <TextArea id="taOutput" fx:id="taOutput" layoutX="457.0" layoutY="36.0" prefHeight="510.0" prefWidth="415.0" wrapText="true"/>
-      <Button id="btnLex" fx:id="btnLex" layoutX="28.0" layoutY="561.0" mnemonicParsing="false" onAction="#onLexButtonPress" prefHeight="25.0" prefWidth="83.0" text="Lexercise/Parse" />
-      <Text layoutX="28.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Input" />
-      <Text layoutX="457.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Output" />
+      <TextArea id="taInput" fx:id="taInput" layoutX="190.0" layoutY="58.0" prefHeight="644.0" prefWidth="331.0" style="-fx-border-color: CAD2C5; -fx-border-radius: 0; -fx-border-width: 3;" />
+      <TextArea id="taOutput" fx:id="taOutput" layoutX="530.0" layoutY="59.0" prefHeight="644.0" prefWidth="331.0" style="-fx-border-color: #CAD2C5; -fx-border-radius: 0; -fx-border-width: 3;" wrapText="true" />
+      <Text fill="#2d89ef" layoutX="190.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Input">
+         <font>
+            <Font name="Segoe UI Semilight" size="25.0" />
+         </font></Text>
+      <Text fill="#2d89ef" layoutX="530.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Output">
+         <font>
+            <Font name="Segoe UI Semilight" size="25.0" />
+         </font></Text>
+      <TextArea fx:id="taTokens" layoutX="869.0" layoutY="59.0" prefHeight="644.0" prefWidth="173.0" style="-fx-border-color: #CAD2C5; -fx-border-radius: 0; -fx-border-width: 3;" />
+      <Text fill="#2d89ef" layoutX="869.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tokens" wrappingWidth="122.1181640625">
+         <font>
+            <Font name="Segoe UI Semilight" size="25.0" />
+         </font>
+      </Text>
+      <Pane prefHeight="731.0" prefWidth="167.0" style="-fx-background-color: #1d1d1d;">
+         <children>
+            <Button id="btnLex" fx:id="btnLex" mnemonicParsing="false" onAction="#onLexButtonPress" onMouseEntered="#onButtonEnter" onMouseExited="#onButtonExit" prefHeight="50.0" prefWidth="167.0" style="-fx-background-color: #1d1d1d;" text="Parse" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI" size="15.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
    </children>
 </Pane>
