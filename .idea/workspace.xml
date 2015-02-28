@@ -124,8 +124,8 @@
       <file leaf-file-name="parser.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/sample/parser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.1889169" vertical-offset="3918" max-vertical-offset="5457">
-              <caret line="286" column="37" selection-start-line="286" selection-start-column="37" selection-end-line="286" selection-end-column="37" />
+            <state vertical-scroll-proportion="0.61083126" vertical-offset="4530" max-vertical-offset="5457">
+              <caret line="295" column="35" selection-start-line="295" selection-start-column="35" selection-end-line="295" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#516#523#0" expanded="true" />
@@ -995,8 +995,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/parser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1889169" vertical-offset="3918" max-vertical-offset="5457">
-          <caret line="286" column="37" selection-start-line="286" selection-start-column="37" selection-end-line="286" selection-end-column="37" />
+        <state vertical-scroll-proportion="0.61083126" vertical-offset="4530" max-vertical-offset="5457">
+          <caret line="295" column="35" selection-start-line="295" selection-start-column="35" selection-end-line="295" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#516#523#0" expanded="true" />

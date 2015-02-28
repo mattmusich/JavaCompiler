@@ -261,8 +261,8 @@ public class parser {
         token current = tokenStack.peek();
         System.out.println("BooleanOp " + current.getToken());
 
-        if(current.getTokenType().equals("EQUALS")){
-            tokenStack = match("EQUALS",tokenStack);
+        if(current.getTokenType().equals("DUBEQUALS")){
+            tokenStack = match("DUBEQUALS",tokenStack);
         } else if (current.getTokenType().equals("NOTEQUALS")){
             tokenStack = match("NOTEQUALS",tokenStack);
         } else {
@@ -293,7 +293,7 @@ public class parser {
 
     public static Queue<token> parseIf(Queue<token> tokenStack){
 
-        tokenStack = match("if",tokenStack);
+        tokenStack = match("KEYWORD",tokenStack);
 
         tokenStack = parseBooleanExpr(tokenStack);
 
