@@ -18,18 +18,12 @@ public class Main extends Application {
     //Dont Touch main Method, its not needed for anything cause JavaFx has its back
     public static void main(String[] args) {launch(args);}
 
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("Layout.fxml"));
         primaryStage.setTitle("Musich Compiler");
         primaryStage.setScene(new Scene(root, 1060, 725));
         primaryStage.show();
-
-
-
-
     }
-
 
 }

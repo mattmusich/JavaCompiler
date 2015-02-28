@@ -116,7 +116,6 @@ public class parser {
         return tokenStack;
     }
 
-
     public static Queue<token> parseStatement(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
@@ -301,15 +300,5 @@ public class parser {
 
         return tokenStack;
     }
-
-
-
-    public static String convertTokensToString(ArrayList<token> sentTokens){
-
-
-        return "";
-    }
-
-
 
 }

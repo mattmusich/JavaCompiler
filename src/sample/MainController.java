@@ -34,7 +34,6 @@ public class MainController {
 
         taOutput.appendText("Parse Status: \n" + parsedString + "\n");
 
-
     }
 
     @FXML
@@ -44,9 +43,7 @@ public class MainController {
                 "if(b == \"Hey Alan\"){\n" +
                 "print(b)\n" +
                 "}}");
-
     }
-
 
     //meant for output of the tokens that get send
     public String tokenToSting(ArrayList<token> sentTokens) {
@@ -59,7 +56,6 @@ public class MainController {
                 tokenString += tokens.get(x).getToken() + "\n";
         }
         return tokenString;
-
     }
 
 
