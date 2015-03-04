@@ -36,6 +36,7 @@ public class parser {
         return errorString;
     }
 
+
     //This will check if the current token is the same as the "testCase" sent
     public static Queue<token> match(String testCase, Queue<token> tokenStack){
 
@@ -67,7 +68,7 @@ public class parser {
         //output to console and the taOutput that sends to the main controller
         if (errorString.equals("")) {
             System.out.println("We made it through the parse, all is good in the world");
-            return "We made it through the parse, all is good in the world";
+            return "We made it through the parse, all is good in the world\n";
         }
         else{
             return "\nERRORS:" + errorString;
@@ -121,22 +122,28 @@ public class parser {
         token current = tokenStack.peek();
         System.out.println("Statement " + current.getToken());
 
-        if (current.getTokenData().equals("print")){
-            tokenStack = parsePrint(tokenStack);
-        } else if (current.getTokenType().equals("ID")){ //THIS is a type not data
-            tokenStack = parseAssignment(tokenStack);
-        } else if (current.getTokenData().equals("int") || current.getTokenData().equals("string") || current.getTokenData().equals("boolean") ){ //TODO or string or bool??
-            tokenStack = parseVarDecl(tokenStack);
-        } else if (current.getTokenData().equals("while")){
-            tokenStack = parseWhile(tokenStack);
-        } else if (current.getTokenData().equals("if")){
-            tokenStack = parseIf(tokenStack);
-        } else if (current.getTokenType().equals("LBRACK")){ //THIS is a type not data
-            tokenStack = parseBlock(tokenStack);
+        if (!current.getTokenType().equals("QUOTE")) {
+            if (current.getTokenData().equals("print")) {
+                tokenStack = parsePrint(tokenStack);
+            } else if (current.getTokenType().equals("ID")) { //THIS is a type not data
+                tokenStack = parseAssignment(tokenStack);
+            } else if (current.getTokenData().equals("int") || current.getTokenData().equals("string") || current.getTokenData().equals("boolean")) { //TODO or string or bool??
+                tokenStack = parseVarDecl(tokenStack);
+            } else if (current.getTokenData().equals("while")) {
+                tokenStack = parseWhile(tokenStack);
+            } else if (current.getTokenData().equals("if")) {
+                tokenStack = parseIf(tokenStack);
+            } else if (current.getTokenType().equals("LBRACK")) { //THIS is a type not data
+                tokenStack = parseBlock(tokenStack);
+            } else {
+                errorString += "\nError at token: " + current.getToken() + " #Expecting: print, ID, int, while, if or Left Bracket, but got " + current.getTokenType();
+            }
         } else {
-            errorString += "\nError at token: " + current.getToken() + " #Expecting: print, ID, int, while, if or Left Bracket, but got " + current.getTokenType();
+            System.out.println("Quote PREVENTION");
+            errorString += "\nError at token: " + current.getToken() + " #Cannot use a quoted phrase without an assignment or print statement";
+            tokenStack.clear();
+            tokenStack.add(new token("RBRACK","}"));
         }
-
 
         return tokenStack;
     }
@@ -182,11 +189,11 @@ public class parser {
         token current = tokenStack.peek();
         System.out.println("Expr " + current.getToken());
 
-        if (current.getTokenType().equals("DIGIT")){
+        if (current.getTokenType().equals("DIGIT") || current.getTokenType().equals("PLUS")){
             tokenStack = parseIntExpr(tokenStack);
         } else if (current.getTokenType().equals("QUOTE")){
             tokenStack = parseStringExpr(tokenStack);
-        }  else if (current.getTokenType().equals("LPAREN") || current.getTokenType().equals("BOOLEAN") ){
+        }  else if (current.getTokenType().equals("LPAREN") || current.getTokenType().equals("KEYWORD") ){
             tokenStack = parseBooleanExpr(tokenStack);
         }  else if (current.getTokenType().equals("ID")){
             tokenStack = parseID(tokenStack);
@@ -205,6 +212,7 @@ public class parser {
         token current = tokenStack.peek();
 
         if(current.getTokenType().equals("PLUS")){
+            tokenStack.remove();
             tokenStack = parseExpr(tokenStack);
         }
 
@@ -247,7 +255,7 @@ public class parser {
             tokenStack = parseExpr(tokenStack);
             tokenStack = match("RPAREN",tokenStack);
         } else if (current.getTokenData().equals("true") || current.getTokenData().equals("false")){
-            tokenStack = match("BOOLEAN", tokenStack);
+            tokenStack = match("KEYWORD", tokenStack);
         } else {
             errorString += "\nError at token: " + current.getToken() + " #Expecting: Left Parenthesis or boolean value, but got " + current.getTokenType();
         }

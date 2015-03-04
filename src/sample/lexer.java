@@ -42,8 +42,10 @@ public class lexer {
                                 System.out.println("Quote found");
                                 //check to make sure the next char is not a "
                                 if (Character.toString(baseString.charAt(i+1)).matches("\"")){
-                                    tokens.add(new token("STRING", ""));
+                                    tokens.add(new token("CHAR", ""));
+                                    tokens.add(new token("QUOTE", "\""));
                                     System.out.println("Quote empty");
+                                    i++;
                                 } else {
                                     System.out.println("Quote else hit");
                                     //Loop through a forward set that adds to i and keep going till the char is "

@@ -4,8 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.text.Text;
-
 import java.util.ArrayList;
 
 public class MainController {
@@ -24,7 +22,13 @@ public class MainController {
 
         String baseString = taInput.getText().trim();
 
-        ArrayList<token> lexerTokens = lexer.lexercise(baseString + "$");
+        //the error wording is horrid
+        if (!baseString.endsWith("$")){
+            baseString += "$";
+            taOutput.appendText("Warning: Forgot End of Program \"$\" character, or code is included past the End of Line character.\n It has been added at the end of your input.\n All text after has been ignored by the Parser\n\n");
+        }
+
+        ArrayList<token> lexerTokens = lexer.lexercise(baseString);
 
         String lexedString = tokenToSting(lexerTokens);
 
@@ -32,7 +36,7 @@ public class MainController {
 
         taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
 
-        taOutput.appendText("Parse Status: \n" + parsedString + "\n");
+        taOutput.appendText("Parse Status: \n" + parsedString + "\n" );
 
     }
 
