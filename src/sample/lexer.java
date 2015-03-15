@@ -47,7 +47,7 @@ public class lexer {
                                     System.out.println("Quote empty");
                                     i++;
                                 } else {
-                                    System.out.println("Quote else hit");
+                                    System.out.println("Quote else hit these quotes have stuff in them");
                                     //Loop through a forward set that adds to i and keep going till the char is "
                                     for (int adder = 1; adder <= baseString.length(); adder++ ){
                                         System.out.println("in quote loop");
@@ -62,7 +62,11 @@ public class lexer {
                                             if(Character.toString(baseString.charAt(i + adder)).matches(" ")){
                                                 tokens.add(new token("CHAR", " "));
                                             } else {
-                                                tokens.add(new token("CHAR", Character.toString(baseString.charAt(i + adder))));
+                                                if (!Character.toString(baseString.charAt(i + adder)).matches("[A-Z]")) {
+                                                    tokens.add(new token("CHAR", Character.toString(baseString.charAt(i + adder))));
+                                                } else {
+                                                    errorText += "Error Characters cannot be uppercase, please change all upper case letters to lower case.";
+                                                }
                                             }
                                             //builtString += Character.toString(baseString.charAt(i + adder)); STRINGS??
                                         }
@@ -100,6 +104,7 @@ public class lexer {
             // STEP 2 Digit checking
             } else if (Character.toString(baseString.charAt(i)).matches("[0-9]")) {
                 //To EZ
+                //TODO CHECK DOUBLE DIGITS
                     tokens.add(new token("DIGIT",Character.toString(baseString.charAt(i))));
                     System.out.println("DIGIT TOKEN MADE: " + tokenText);
 
@@ -153,11 +158,24 @@ public class lexer {
                        }
                     } else {
                         //if character after i is not a letter
-                        tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
+                        //TODO ADD A DEFENSE AGAINST CAPS
+                        if (!Character.toString(baseString.charAt(i)).matches("[A-Z]")){
+                            tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
+                        } else {
+                            errorText += "Error Characters cannot be uppercase, please change all upper case letters to lower case.";
+                        }
+
                     }
                 } else {
                     //if no character after i
-                    tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
+                    //TODO ADD A DEFENSE AGAINST CAPS
+                    if (!Character.toString(baseString.charAt(i)).matches("[A-Z]")) {
+                        tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
+                    } else {
+                        errorText += "Error Characters cannot be uppercase, please change all upper case letters to lower case.";
+                    }
+
+
                 }
                 //if the $ is found it is the end of the file
             } else if (Character.toString(baseString.charAt(i)).matches("$")){
