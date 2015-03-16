@@ -1,14 +1,22 @@
 package sample;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
+
 import java.util.*;
 import java.util.regex.*;
 import java.lang.Enum;
 
 //does all the lex to token operations
 public class lexer {
+
+    @FXML
+    private TextArea taOutput;
+
     // This will loop through input to determine tokens
     // Im stupid and didn't divide up the functions and got carried away.
-    public static ArrayList<token> lexercise(String baseString){
+    public ArrayList<Object> lexercise(String baseString){
+//ArrayList<token>
 
         //Keyword arraylist building
         ArrayList<token> tokens = new ArrayList<token>();
@@ -25,7 +33,7 @@ public class lexer {
         //Defined Strings
         String remainingText = baseString;
         String tokenText = "";
-        String errorText = "Errors: NONE";
+        String errorText = "";
         String tokenString = "";
         String builtString = "";
 
@@ -58,14 +66,22 @@ public class lexer {
                                             System.out.println("String made " + builtString);
                                             adder = baseString.length()+1;
                                         } else {
-                                            System.out.println("Character added to quote");
+                                            System.out.println("Character added to quote: " + Character.toString(baseString.charAt(i + adder)) +"@");
                                             if(Character.toString(baseString.charAt(i + adder)).matches(" ")){
                                                 tokens.add(new token("CHAR", " "));
                                             } else {
                                                 if (!Character.toString(baseString.charAt(i + adder)).matches("[A-Z]")) {
-                                                    tokens.add(new token("CHAR", Character.toString(baseString.charAt(i + adder))));
+                                                    if (!Character.toString(baseString.charAt(i + adder)).matches("[0-9]")) {
+                                                        if (!Character.toString(baseString.charAt(i + adder)).matches("\\n")) {
+                                                            tokens.add(new token("CHAR", Character.toString(baseString.charAt(i + adder))));
+                                                        } else {
+                                                            errorText += "ERROR: String Characters cannot be newline characters, please remove all newlines from the strings.\n\n";
+                                                        }
+                                                    } else {
+                                                        errorText += "ERROR: String Characters cannot be Numbers, please remove all numbers from the string.\n\n";
+                                                    }
                                                 } else {
-                                                    errorText += "Error Characters cannot be uppercase, please change all upper case letters to lower case.";
+                                                    errorText += "ERROR: String Characters cannot be uppercase, please change all upper case letters to lower case within the string.\n\n";
                                                 }
                                             }
                                             //builtString += Character.toString(baseString.charAt(i + adder)); STRINGS??
@@ -103,10 +119,13 @@ public class lexer {
 
             // STEP 2 Digit checking
             } else if (Character.toString(baseString.charAt(i)).matches("[0-9]")) {
-                //To EZ
-                //TODO CHECK DOUBLE DIGITS
-                    tokens.add(new token("DIGIT",Character.toString(baseString.charAt(i))));
+               //TODO CHECK DOUBLE DIGITS
+                if (!Character.toString(baseString.charAt(i-1)).matches("[0-9]")) {
+                    tokens.add(new token("DIGIT", Character.toString(baseString.charAt(i))));
                     System.out.println("DIGIT TOKEN MADE: " + tokenText);
+                } else {
+                    errorText += "ERROR: Numbers cannot have double digits or more, please make all instances single Digits.\n\n";
+                }
 
 
 
@@ -162,7 +181,7 @@ public class lexer {
                         if (!Character.toString(baseString.charAt(i)).matches("[A-Z]")){
                             tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
                         } else {
-                            errorText += "Error Characters cannot be uppercase, please change all upper case letters to lower case.";
+                            errorText += "ERROR: Characters cannot be uppercase, please change all upper case letters to lower case.\n\n";
                         }
 
                     }
@@ -172,16 +191,19 @@ public class lexer {
                     if (!Character.toString(baseString.charAt(i)).matches("[A-Z]")) {
                         tokens.add(new token("ID", Character.toString(baseString.charAt(i))));
                     } else {
-                        errorText += "Error Characters cannot be uppercase, please change all upper case letters to lower case.";
+                        errorText += "ERROR: Characters cannot be uppercase, please change all upper case letters to lower case.\n\n";
                     }
 
 
                 }
                 //if the $ is found it is the end of the file
+            } else if (Character.toString(baseString.charAt(i)).matches("[A-Z]")) {
+                errorText += "ERROR: Characters cannot be uppercase, please change all upper case letters to lower case.\n\n";
             } else if (Character.toString(baseString.charAt(i)).matches("$")){
                 tokens.add(new token("EOF", "$"));
                 i = remainingText.length();
             }
+
         }
 
         //output management, loops through all tokens in the Arraylist and sets them to tokenString
@@ -190,10 +212,13 @@ public class lexer {
             tokenString += tokens.get(x).getToken();
         }
 
-        //builds the return value to the controller taking in all errors and an output of lexer tokens
-        String lexedString = errorText + "\n" + tokenString;
 
-        return tokens;
+        //TODO check the null pointer
+        System.out.println(errorText);
+        ArrayList<Object> sends = new ArrayList<Object>();
+        sends.add(0, tokens);
+        sends.add(1, errorText);
+        return sends;
     }
 
 

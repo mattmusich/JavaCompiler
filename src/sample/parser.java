@@ -56,6 +56,9 @@ public class parser {
         } else {
             System.out.println("Expecting: " + testCase + " got " + current.getTokenType());
             errorString += "\nError at token: " + current.getToken() + " #Expecting: " + testCase + " got " + current.getTokenType();
+            //TODO add a way to escape if this error occurs.
+            tokenStack.clear();
+            tokenStack.add(new token("RBRACK","}"));
 
         }
 
@@ -74,7 +77,7 @@ public class parser {
         //output to console and the taOutput that sends to the main controller
         if (errorString.equals("")) {
             System.out.println("We made it through the parse, all is good in the world");
-            return "We made it through the parse, all is good in the world\n";
+            return "We made it through the parse, all is good in the world\n\nEND PARSE";
         }
         else{
             return "\nERRORS:" + errorString;
@@ -133,7 +136,7 @@ public class parser {
                 tokenStack = parsePrint(tokenStack);
             } else if (current.getTokenType().equals("ID")) { //THIS is a type not data
                 tokenStack = parseAssignment(tokenStack);
-            } else if (current.getTokenData().equals("int") || current.getTokenData().equals("string") || current.getTokenData().equals("boolean")) { //TODO or string or bool??
+            } else if (current.getTokenData().equals("int") || current.getTokenData().equals("string") || current.getTokenData().equals("boolean")) {
                 tokenStack = parseVarDecl(tokenStack);
             } else if (current.getTokenData().equals("while")) {
                 tokenStack = parseWhile(tokenStack);
@@ -141,12 +144,24 @@ public class parser {
                 tokenStack = parseIf(tokenStack);
             } else if (current.getTokenType().equals("LBRACK")) { //THIS is a type not data
                 tokenStack = parseBlock(tokenStack);
-            } else {
-                errorString += "\nError at token: " + current.getToken() + " #Expecting: print, ID, int, while, if or Left Bracket, but got " + current.getTokenType();
+            } else { //TODO this might cause some errors ??????
+                if (!current.getTokenType().equals("RBRACK")) {
+                    errorString += "\nError at token: " + current.getToken() + " #Expecting: print, ID, int, while, if or Left Bracket, but got " + current.getTokenType();
+                } else {
+                    errorString += "\nErrors have occured, please fix all reported errors before continuing.\n";
+                }
+
             }
         } else {
             System.out.println("Quote PREVENTION");
             errorString += "\nError at token: " + current.getToken() + " #Cannot use a quoted phrase without an assignment or print statement";
+            tokenStack.clear();
+            tokenStack.add(new token("RBRACK","}"));
+        }
+
+        //TODO this change might be iffy in other cases.
+        if (current.getTokenType().equals("DIGIT")) {
+            errorString += "\nError at token: " + current.getToken() + " #Cannot assign a number with a value.";
             tokenStack.clear();
             tokenStack.add(new token("RBRACK","}"));
         }
@@ -204,8 +219,11 @@ public class parser {
         }  else if (current.getTokenType().equals("ID")){
             tokenStack = parseID(tokenStack);
         }  else {
-            errorString += "\nError at token: " + current.getToken() + " #Expecting: Digit, Quotes, Left Parenthesis, boolean, or an ID, but got " + current.getTokenType();
-
+            if (!current.getTokenType().equals("RBRACK")) {
+                errorString += "\nError at token: " + current.getToken() + " #Expecting: Digit, Quotes, Left Parenthesis, boolean, or an ID, but got " + current.getTokenType();
+            } else {
+                errorString += "\nErrors have occured, please fix all reported errors before continuing.\n";
+            }
         }
 
         return tokenStack;
