@@ -72,10 +72,10 @@ public class lexer {
                                             } else {
                                                 if (!Character.toString(baseString.charAt(i + adder)).matches("[A-Z]")) {
                                                     if (!Character.toString(baseString.charAt(i + adder)).matches("[0-9]")) {
-                                                        if (!Character.toString(baseString.charAt(i + adder)).matches("\\n")) {
+                                                        if (!Character.toString(baseString.charAt(i + adder)).matches("[$&+,:;=?@#|'<>.^*()%!-]")) {
                                                             tokens.add(new token("CHAR", Character.toString(baseString.charAt(i + adder))));
                                                         } else {
-                                                            errorText += "ERROR: String Characters cannot be newline characters, please remove all newlines from the strings.\n\n";
+                                                            errorText += "ERROR: String Characters cannot be symbols, please remove all symbols from the string.\n\n";
                                                         }
                                                     } else {
                                                         errorText += "ERROR: String Characters cannot be Numbers, please remove all numbers from the string.\n\n";
