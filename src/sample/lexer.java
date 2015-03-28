@@ -70,18 +70,24 @@ public class lexer {
                                             if(Character.toString(baseString.charAt(i + adder)).matches(" ")){
                                                 tokens.add(new token("CHAR", " "));
                                             } else {
-                                                if (!Character.toString(baseString.charAt(i + adder)).matches("[A-Z]")) {
-                                                    if (!Character.toString(baseString.charAt(i + adder)).matches("[0-9]")) {
-                                                        if (!Character.toString(baseString.charAt(i + adder)).matches("[$&+,:;=?@#|'<>.^*()%!-]")) {
+                                                if (!Character.toString(baseString.charAt(i + adder)).matches("[A-Z]")) { //MATCH 1
+                                                    if (!Character.toString(baseString.charAt(i + adder)).matches("[0-9]")) { //MATCH 2
+                                                        if (!Character.toString(baseString.charAt(i + adder)).matches("[$&+,:;=?@#|'<>.^*()%!-]")) { //MATCH 3
                                                             tokens.add(new token("CHAR", Character.toString(baseString.charAt(i + adder))));
                                                         } else {
-                                                            errorText += "ERROR: String Characters cannot be symbols, please remove all symbols from the string.\n\n";
+                                                            errorText += "ERROR: String Characters cannot be symbols, please remove all symbols from the string.\n\n"; //MATCH 3
+
+                                                            if (Character.toString(baseString.charAt(i + adder)).matches("[$]")){
+                                                                i = remainingText.length();
+                                                                adder = baseString.length() + 1;
+                                                                errorText += "ERROR: Unclosed Quote, please add another quote that closes the string.\n\n";
+                                                            }
                                                         }
                                                     } else {
-                                                        errorText += "ERROR: String Characters cannot be Numbers, please remove all numbers from the string.\n\n";
+                                                        errorText += "ERROR: String Characters cannot be Numbers, please remove all numbers from the string.\n\n"; //MATCH 2
                                                     }
                                                 } else {
-                                                    errorText += "ERROR: String Characters cannot be uppercase, please change all upper case letters to lower case within the string.\n\n";
+                                                    errorText += "ERROR: String Characters cannot be uppercase, please change all upper case letters to lower case within the string.\n\n"; //MATCH 1
                                                 }
                                             }
                                             //builtString += Character.toString(baseString.charAt(i + adder)); STRINGS??
@@ -106,7 +112,7 @@ public class lexer {
                             }
                                 break;
                     case '!':
-                    // /if the index is less than the length of the string then check, if not then its an Error
+                        // /if the index is less than the length of the string then check, if not then its an Error
                                 if ( i+1 < baseString.length()) {
                                     if (Character.toString(baseString.charAt(i+1)).matches("=")) {
                                         tokens.add(new token("NOTEQUALS", "!="));
@@ -138,7 +144,7 @@ public class lexer {
                     if (Character.toString(baseString.charAt(i+1)).matches("[a-z]")) {
 
                         //This loop is an incrementer for lookahead, check the systemlog for how it kinda works
-                        for (int j = 1; j <= 6; j++) {
+                        for (int j = 1; j <= 10; j++) {
                            if (i + j < baseString.length()) {
 
                                //only adds the "i" position character on the first time the lookahead is active
@@ -147,9 +153,12 @@ public class lexer {
                                }
 
                                //adds each value at "j" of the lookahead
-                               tokenText += Character.toString(baseString.charAt(i + j));
-                               System.out.println("lookahead: " +tokenText);
+                               if (Character.toString(baseString.charAt(i+j)).matches(" ")){
 
+                               } else {
+                                   tokenText += Character.toString(baseString.charAt(i + j));
+                                   System.out.println("lookahead: " + tokenText);
+                               }
 
                                //-checks if the tokenText is directly equal to the kewords list
                                //-if it is it resets the lookahead
@@ -159,11 +168,11 @@ public class lexer {
                                    tokens.add(new token("KEYWORD", tokenText));
                                    System.out.println("KW TOKEN MADE: " + tokenText);
                                    i += j;
-                                   j = 8;
+                                   j = 11;
                                    tokenText = "";
 
                                } else {
-                                    if(j == 6){
+                                    if(j == 10){
                                         System.out.println("ID TOKEN MADE: " + Character.toString(baseString.charAt(i)));
                                         tokenText="";
                                         tokens.add(new token("ID",Character.toString(baseString.charAt(i))));
@@ -196,10 +205,12 @@ public class lexer {
 
 
                 }
-                //if the $ is found it is the end of the file
+
             } else if (Character.toString(baseString.charAt(i)).matches("[A-Z]")) {
                 errorText += "ERROR: Characters cannot be uppercase, please change all upper case letters to lower case.\n\n";
-            } else if (Character.toString(baseString.charAt(i)).matches("$")){
+            } else if (Character.toString(baseString.charAt(i)).matches("[~!@#%^&*_|:<>?;',./]")){
+                errorText += "ERROR: Characters cannot be symbols([~!@#%^&*_|:<>?;',./]), please remove all symbols from the string.\n\n";
+            } else if (Character.toString(baseString.charAt(i)).matches("$")){  //if the $ is found it is the end of the file
                 tokens.add(new token("EOF", "$"));
                 i = remainingText.length();
             }

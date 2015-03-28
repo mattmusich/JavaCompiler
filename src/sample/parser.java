@@ -59,7 +59,7 @@ public class parser {
             //TODO add a way to escape if this error occurs.
             tokenStack.clear();
             tokenStack.add(new token("RBRACK","}"));
-
+            tokenStack.add(new token("RBRACK","}"));  //TODO kinda iffy fix, need to test for issues with other cases.
         }
 
 
@@ -98,11 +98,21 @@ public class parser {
     //calls parseStatementList if there is bracket infront of it, then after the recursive call checks the second bracket
     public static Queue<token> parseBlock(Queue<token> tokenStack){
 
+
+
         tokenStack = match("LBRACK", tokenStack);
 
         tokenStack = parseStatementList(tokenStack);
 
         tokenStack = match("RBRACK", tokenStack);
+
+        token current = tokenStack.peek();
+        System.out.println("Final token" + current.getToken());
+
+        if (current.getTokenType().equals("LBRACK")){
+            errorString += "\nLeft Brace out of scope please make sure all braces are within the main scope \n";
+            errorString += "\nErrors have occured, please fix all reported errors before continuing.\n";
+        }
 
         return tokenStack;
     }
@@ -274,14 +284,22 @@ public class parser {
 
         if(current.getTokenType().equals("LPAREN")){
             tokenStack = match("LPAREN",tokenStack);
+            System.out.println("left match done");
             tokenStack = parseExpr(tokenStack);
+            System.out.println("expr1 done");
             tokenStack = parseBooleanOp(tokenStack);
+            System.out.println("boolop done");
             tokenStack = parseExpr(tokenStack);
+            System.out.println("expr2 done");
             tokenStack = match("RPAREN",tokenStack);
+            System.out.println("right match done");
         } else if (current.getTokenData().equals("true") || current.getTokenData().equals("false")){
             tokenStack = match("KEYWORD", tokenStack);
         } else {
+            System.out.println("not a paren or boolval");
             errorString += "\nError at token: " + current.getToken() + " #Expecting: Left Parenthesis or boolean value, but got " + current.getTokenType();
+            tokenStack.clear();
+            tokenStack.add(new token("RBRACK","}"));
         }
 
         return tokenStack;
