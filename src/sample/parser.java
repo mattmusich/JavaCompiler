@@ -74,6 +74,18 @@ public class parser {
 
         parseProgram(tokenStack);
 
+        //checks for any remaining right brackets and anything else after the $
+        if (!tokenStack.isEmpty()){
+
+            token test = tokenStack.peek();
+            System.out.println(test.getToken());
+
+            if (test.getTokenType().equals("RBRACK")) {
+                System.out.println("you done goofed there is a right bracket.");
+                errorString += "\nRight Bracket is missing a paired Left Bracket. Please add a Right or remove a bracket to fix the scope\n";
+            }
+        }
+
         //output to console and the taOutput that sends to the main controller
         if (errorString.equals("")) {
             System.out.println("We made it through the parse, all is good in the world");
@@ -104,16 +116,25 @@ public class parser {
 
         tokenStack = parseStatementList(tokenStack);
 
-        tokenStack = match("RBRACK", tokenStack);
-
-        token current = tokenStack.peek();
-        System.out.println("Final token" + current.getToken());
-
-        if (current.getTokenType().equals("LBRACK")){
-            errorString += "\nLeft Brace out of scope please make sure all braces are within the main scope \n";
-            errorString += "\nErrors have occured, please fix all reported errors before continuing.\n";
+        if (!tokenStack.isEmpty()) {
+            tokenStack = match("RBRACK", tokenStack);
+        } else {
+            System.out.println("more left bracks than right bracks.  Stop program");
+            errorString += "\nLeft Bracket is missing a paired Right Bracket. Please add or remove a Right bracket to fix the scope\n";
+            tokenStack.clear();
+            tokenStack.add(new token("RBRACK","}"));
         }
 
+
+        if (!tokenStack.isEmpty()) {
+            token current = tokenStack.peek();
+            //System.out.println("Final token" + current.getToken());
+
+            if (current.getTokenType().equals("LBRACK")) {
+                errorString += "\nLeft Brace out of scope please make sure all braces are within the main scope \n";
+                errorString += "\nErrors have occured, please fix all reported errors before continuing.\n";
+            }
+        }
         return tokenStack;
     }
 
@@ -129,7 +150,6 @@ public class parser {
                 tokenStack = parseStatementList(tokenStack); //TODO IF broken check the types on the current.equals
             } else {
 
-                //escape the situation when the tokens run out????
             }
         }
 
