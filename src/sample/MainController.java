@@ -57,6 +57,21 @@ public class MainController {
 
         taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
 
+        //TODO All of this VV
+        //we need to make the CST at this point
+
+        //Add a call to copy of parse that makes the tree
+
+        //@return a tree
+
+        //build hash scope of tree?
+
+        //print the sent tree in the taOutput area (When this is all done, make nice pretty gui one
+
+        //from here check patterns on the cst?
+
+
+
 
 
     }
