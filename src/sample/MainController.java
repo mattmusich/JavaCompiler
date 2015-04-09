@@ -51,8 +51,16 @@ public class MainController {
 
         System.out.println(".." + lexErrors + "..");
         if (lexErrors.equals("")) {
-            String parsedString = parser.initParse(lexerTokens);
+            //define the arraylist to send more than 1 thing back
+            ArrayList<Object> parseSend = parser.initParse(lexerTokens);
+
+            //print the errors if any are sent back
+            String parsedString = parseSend.get(0).toString();
             taOutput.appendText("Parse Status: \n" + parsedString + "\n" );
+
+            //print cst from parse
+            tree cst = (tree)parseSend.get(1);
+            taOutput.appendText("CST\n"+ cst.toString());
         }
 
         taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
@@ -67,7 +75,13 @@ public class MainController {
         //build hash scope of tree?
 
         //print the sent tree in the taOutput area (When this is all done, make nice pretty gui one
-
+        //tree test = new tree();
+        //test.addBranchNode("block1","branch");
+        //test.addBranchNode("block2","branch");
+        //test.addBranchNode("block3","leaf");
+        //test.endChildren();
+        //test.addBranchNode("block4","branch");
+        //taOutput.appendText(test.toString());
         //from here check patterns on the cst?
 
 
@@ -82,7 +96,7 @@ public class MainController {
                 "print(a)stringb  b = \"hey alan\"\n" +
                 "if(b == \"hey alan\"){\n" +
                 "print(b)\n" +
-                "}}");
+                "}}$");
     }
 
     //meant for output of the tokens that get send
