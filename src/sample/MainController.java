@@ -59,36 +59,30 @@ public class MainController {
             taOutput.appendText("Parse Status: \n" + parsedString + "\n" );
 
             //print cst from parse
-            tree cst = (tree)parseSend.get(1);
-            taOutput.appendText("CST\n"+ cst.toString());
+            tree cst = new tree();
+            cst = (tree)parseSend.get(1);
+            taOutput.appendText("CST\n"+ cst.toString() + "\n");
+
+            //convert the cst to ast and print
+            CstToAst test = new CstToAst();
+            tree ast = new tree();
+            ast = test.convert(cst);
+            taOutput.appendText("AST\n"+ ast.toString() + "\n");
         }
 
         taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
 
         //TODO All of this VV
-        //we need to make the CST at this point
 
-        //Add a call to copy of parse that makes the tree
-
-        //@return a tree
-
-        //build hash scope of tree?
-
-        //print the sent tree in the taOutput area (When this is all done, make nice pretty gui one
-        //tree test = new tree();
-        //test.addBranchNode("block1","branch");
-        //test.addBranchNode("block2","branch");
-        //test.addBranchNode("block3","leaf");
-        //test.endChildren();
-        //test.addBranchNode("block4","branch");
-        //taOutput.appendText(test.toString());
-        //from here check patterns on the cst?
+        //CST to AST class
 
 
-
-
+        //build hash table scope of tree based on AST
 
     }
+
+
+
 
     @FXML
     private void onCase1ButtonPress(ActionEvent event){
@@ -98,6 +92,7 @@ public class MainController {
                 "print(b)\n" +
                 "}}$");
     }
+
 
     //meant for output of the tokens that get send
     public String tokenToSting(ArrayList<token> sentTokens) {

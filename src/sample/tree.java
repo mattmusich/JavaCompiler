@@ -44,6 +44,7 @@ public class tree {
     }
 
     public String toString(){
+        result = "";
         expand(root, 0);
         return result;
     }
