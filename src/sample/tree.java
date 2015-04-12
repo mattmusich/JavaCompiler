@@ -50,9 +50,11 @@ public class tree {
     }
 
     private void expand(treeNode node, int depth){
-
+        if (node == null){
+            return;
+        }
         for (int i = 0; i < depth; i++){
-            result += "-";
+            result += "+";
         }
 
         if (node.nodeChildren == null || node.nodeChildren.size() == 0){

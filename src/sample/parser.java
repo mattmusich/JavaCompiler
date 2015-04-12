@@ -18,9 +18,6 @@ public class parser {
         //set tokens to the token output from the lexer
         ArrayList<token> tokens = sentTokens;
 
-        //TODO make a tree called cst
-
-
         Queue<token> tokenStack = new LinkedList<token>();
 
         //Stack creation
@@ -344,15 +341,16 @@ public class parser {
     }
 
     public static Queue<token> parseBooleanOp(Queue<token> tokenStack){
-        cst.addBranchNode("BoolOp","branch");//
 
         token current = tokenStack.peek();
         System.out.println("BooleanOp " + current.getToken());
 
         if(current.getTokenType().equals("DUBEQUALS")){
             tokenStack = match("DUBEQUALS",tokenStack);
+            cst.addBranchNode("dubEqualBool","branch");//
         } else if (current.getTokenType().equals("NOTEQUALS")){
             tokenStack = match("NOTEQUALS",tokenStack);
+            cst.addBranchNode("notEqualBool","branch");//
         } else {
             errorString += "\nError at token: " + current.getToken() + " #Expecting: == or !=, but got " + current.getTokenType();
         }

@@ -66,6 +66,7 @@ public class MainController {
             //convert the cst to ast and print
             CstToAst test = new CstToAst();
             tree ast = new tree();
+            ast.addBranchNode("root","branch");//
             ast = test.convert(cst);
             taOutput.appendText("AST\n"+ ast.toString() + "\n");
         }
