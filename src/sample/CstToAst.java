@@ -8,22 +8,20 @@ public class CstToAst {
 
     public tree tempAst = new tree();
 
-    public String result = "";
-
+    //defines the new ast and calls scan
     public tree convert(tree cst){
         tree ast = new tree();
-
         ast = scan(cst);
-
         return ast;
     }
 
+    //scan initializes the recursive function compress with the first child of the root node(block)
     private tree scan(tree cst){
         compress(cst.root.nodeChildren.get(0));
         return tempAst;
     }
 
-
+    //recursive decent of the cst and builds the ast
     private void compress(treeNode node) {
 
         System.out.println(ANSI_CYAN + "COMPRESS: Current Node: " + node.nodeName + ANSI_RESET);
@@ -33,12 +31,6 @@ public class CstToAst {
 
         } else {
             //this means we hit a branch ast
-
-            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-            //@@@@@ AST PATTERN CONVERSION ZONE START @@@@@
-            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
             switch (node.nodeName.charAt(0)) {
                 case 'b': //block
                     if (node.nodeName.equals("block")) {
@@ -58,13 +50,11 @@ public class CstToAst {
                         if (node.nodeChildren.get(0).nodeName.equals("int") || node.nodeChildren.get(0).nodeName.equals("string") || node.nodeChildren.get(0).nodeName.equals("boolean")) {
                             tempAst.addBranchNode(node.nodeChildren.get(0).nodeName, "leaf");
                             System.out.println("AST added varDecl left <-");
-                        } else {
-                        } //ERROR should not happen
+                        } else {} //ERROR should not happen
                         if (node.nodeChildren.get(1).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, "leaf");
                             System.out.println("AST added varDecl right ->");
-                        } else {
-                        } //ERROR should not happen
+                        } else {} //ERROR should not happen
 
                         tempAst.endChildren();
                     }
@@ -78,14 +68,12 @@ public class CstToAst {
                         if (node.nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             System.out.println("AST added assignment left <-");
-                        } else {
-                        } //ERROR should not happen
+                        } else {} //ERROR should not happen
 
                         if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
                             tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             System.out.println("AST added assignment right ->");
-                        } else {
-                        } //ERROR should not happen
+                        } else {} //ERROR should not happen
 
                         tempAst.endChildren();
                     }
@@ -99,9 +87,7 @@ public class CstToAst {
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             System.out.println("AST added print left <-");
-                        } else {
-                        } //ERROR should not happen
-
+                        } else { } //ERROR should not happen
 
                         tempAst.endChildren();
                     }
@@ -119,65 +105,22 @@ public class CstToAst {
                         if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             System.out.println("AST added dubEqualbool left <-");
-                        } else {
-                        } //ERROR should not happen
+                        } else {} //ERROR should not happen
 
                         if (!node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
                             tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             System.out.println("AST added dubEqualbool right ->");
-                        } else {
-                        } //ERROR should not happen
+                        } else {} //ERROR should not happen
 
                         tempAst.endChildren();
                     }
                     break;
-//                case 'd'://== (compare ==) BooleanExpression
-//                    if (node.nodeName.equals("dubEqualBool")) {
-//                        System.out.println("AST Checking dub equal");
-//                        tempAst.addBranchNode(node.nodeName, "branch");
-//
-//                        if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
-//                            tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
-//                            System.out.println("AST added dubEqualbool left <-");
-//                        } else {
-//                        } //ERROR should not happen
-//
-//                        if (!node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
-//                            tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
-//                            System.out.println("AST added dubEqualbool right ->");
-//                        } else {
-//                        } //ERROR should not happen
-//
-//                        tempAst.endChildren();
-//                    }
-//                    break;
-//                case 'n': //!= (compare !=) BooleanExpression
-//                    if (node.nodeName.equals("notEqualBool")) {
-//                        System.out.println("AST Checking not equal");
-//                        tempAst.addBranchNode(node.nodeName, "branch");
-//
-//                        if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
-//                            tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
-//                            System.out.println("AST added notEqualbool left <-");
-//                        } else {
-//                        } //ERROR should not happen
-//
-//                        if (!node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
-//                            tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
-//                            System.out.println("AST added notEqualbool right ->");
-//                        } else {
-//                        } //ERROR should not happen
-//
-//                        tempAst.endChildren();
-//                    }
-//                    break;
                 case 'W'://While
                     if (node.nodeName.equals("While")) {
                         System.out.println("AST Checking while");
                         tempAst.addBranchNode(node.nodeName, "branch");
                         compress(node.nodeChildren.get(1));
                         compress(node.nodeChildren.get(2));
-
                     }
                     break;
                 case 'I'://If
@@ -186,7 +129,6 @@ public class CstToAst {
                         tempAst.addBranchNode(node.nodeName, "branch");
                         compress(node.nodeChildren.get(1));
                         compress(node.nodeChildren.get(2));
-
                     }
                     break;
                 default:
@@ -195,137 +137,13 @@ public class CstToAst {
                     }
                     break;
 
-            }
-/*
-            //block
-            if (node.nodeName.equals("block")) {
-                System.out.println("AST checking block");
-                tempAst.addBranchNode("block","branch");
-                for (int i = 0; i < node.nodeChildren.size(); i++) {
-                    compress(node.nodeChildren.get(i));
-                }
-            }
+            }//end compress.case
 
-            //varDecl
-            if (node.nodeName.equals("varDecl")){
-                System.out.println("AST Checking varDecl");
-                tempAst.addBranchNode(node.nodeName,"branch");
+        }//end compress.else
 
-                System.out.println("Decl type:"+ node.nodeChildren.get(0).nodeName);
-                if (node.nodeChildren.get(0).nodeName.equals("int") || node.nodeChildren.get(0).nodeName.equals("string") || node.nodeChildren.get(0).nodeName.equals("boolean")){
-                    tempAst.addBranchNode(node.nodeChildren.get(0).nodeName,"leaf");
-                    System.out.println("AST added varDecl left <-");
-                } else {} //ERROR should not happen
-                if (node.nodeChildren.get(1).nodeChildren.get(0).nodeName.matches("[a-z]")){
-                    tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,"leaf");
-                    System.out.println("AST added varDecl right ->");
-                } else {} //ERROR should not happen
+    }// end compress
 
-                tempAst.endChildren();
-            }
-
-            //Assignment
-            if (node.nodeName.equals("assignment")){
-                System.out.println("AST Checking assignment");
-                tempAst.addBranchNode(node.nodeName,"branch");
-
-                System.out.println("assign type:"+ node.nodeChildren.get(0).nodeChildren.get(0).nodeName);
-                if (node.nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")){
-                    tempAst.addBranchNode(node.nodeChildren.get(0).nodeChildren.get(0).nodeName,"leaf");
-                    System.out.println("AST added assignment left <-");
-                } else {} //ERROR should not happen
-
-                if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")){
-                    tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName,"leaf");
-                    System.out.println("AST added assignment right ->");
-                } else {} //ERROR should not happen
-
-                tempAst.endChildren();
-            }
-
-            //Print
-            if (node.nodeName.equals("print")){
-                System.out.println("AST Checking print");
-                tempAst.addBranchNode(node.nodeName,"branch");
-
-                System.out.println("assign type:"+ node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName);
-                if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")){
-                    tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName,"leaf");
-                    System.out.println("AST added print left <-");
-                } else {} //ERROR should not happen
-
-
-                tempAst.endChildren();
-            }
-
-
-            }
-            //== (compare ==) BooleanExpression
-            if (node.nodeName.equals("dubEqualBool")){
-                System.out.println("AST Checking dub equal");
-                tempAst.addBranchNode(node.nodeName,"branch");
-
-                if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")){
-                    tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName,"leaf");
-                    System.out.println("AST added dubEqualbool left <-");
-                } else {} //ERROR should not happen
-
-                if (!node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")){
-                    tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName,"leaf");
-                    System.out.println("AST added dubEqualbool right ->");
-                } else {} //ERROR should not happen
-
-                tempAst.endChildren();
-            }
-
-
-            //!= (compare !=) BooleanExpression
-            if (node.nodeName.equals("notEqualBool")){
-                System.out.println("AST Checking not equal");
-                tempAst.addBranchNode(node.nodeName,"branch");
-
-                if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")){
-                    tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName,"leaf");
-                    System.out.println("AST added notEqualbool left <-");
-                } else {} //ERROR should not happen
-
-                if (!node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")){
-                    tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName,"leaf");
-                    System.out.println("AST added notEqualbool right ->");
-                } else {} //ERROR should not happen
-
-                tempAst.endChildren();
-            }
-
-
-            //While
-            if (node.nodeName.equals("while")) {
-                System.out.println("AST Checking while");
-                tempAst.addBranchNode(node.nodeName,"branch");
-                compress(node.nodeChildren.get(2));
-
-            }
-            //If
-            if (node.nodeName.equals("IF")) {
-                System.out.println("AST Checking if");
-                tempAst.addBranchNode(node.nodeName, "branch");
-                compress(node.nodeChildren.get(2));
-
-            }
-            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-            //@@@@@ AST PATTERN CONVERSION ZONE END @@@@@
-            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
-                for (int i = 0; i < node.nodeChildren.size(); i++) {
-                    compress(node.nodeChildren.get(i));
-                }
-*/
-
-        }
-
-    }
-}
+}//EOF
 
 
 
