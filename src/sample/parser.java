@@ -15,6 +15,8 @@ public class parser {
 
     public static ArrayList<Object> initParse(ArrayList<token> sentTokens){
 
+        cst.root = null;
+        cst.current = null;
         //set tokens to the token output from the lexer
         ArrayList<token> tokens = sentTokens;
 
@@ -249,7 +251,7 @@ public class parser {
         token current = tokenStack.peek();
         System.out.println("Expr " + current.getToken());
 
-        if (current.getTokenType().equals("DIGIT") || current.getTokenType().equals("PLUS")){
+        if (current.getTokenType().equals("DIGIT") || current.getTokenType().equals("PLUS")){ //|| current.getTokenType().equals("ID")
             tokenStack = parseIntExpr(tokenStack);
         } else if (current.getTokenType().equals("QUOTE")){
             tokenStack = parseStringExpr(tokenStack);
@@ -270,11 +272,13 @@ public class parser {
     }
 
     public static Queue<token> parseIntExpr(Queue<token> tokenStack){
+
         cst.addBranchNode("IntExpr","branch");//
 
         tokenStack = match("DIGIT",tokenStack);
 
         token current = tokenStack.peek();
+        System.out.println("IntExpr " + current.getToken());
 
         if(current.getTokenType().equals("PLUS")){
             tokenStack.remove();

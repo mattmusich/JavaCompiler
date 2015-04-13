@@ -60,6 +60,7 @@ public class MainController {
 
             //print cst from parse
             tree cst = new tree();
+
             cst = (tree)parseSend.get(1);
             taOutput.appendText("CST\n"+ cst.toString() + "\n");
 
