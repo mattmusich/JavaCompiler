@@ -48,6 +48,7 @@ public class CstToAst {
 
                         astHash.scope.add(hashBlock);
                         astHash.sLevel = astHash.sLevel + 1;
+                        astHash.scope.get(astHash.sLevel);//TODO ADD A WAY TO ADD A PARENT
                         System.out.println(ANSI_YELLOW + "HASH.NewScope @setLvl: "+ astHash.sLevel + ANSI_RESET);
 
                         for (int i = 0; i < node.nodeChildren.size(); i++) {

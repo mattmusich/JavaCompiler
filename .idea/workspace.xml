@@ -153,11 +153,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CstToAst.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CstToAst.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/sample/CstToAst.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.45748118" vertical-offset="765" max-vertical-offset="4760">
-              <caret line="70" column="59" selection-start-line="70" selection-start-column="59" selection-end-line="70" selection-end-column="59" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4777">
+              <caret line="42" column="65" selection-start-line="42" selection-start-column="65" selection-end-line="42" selection-end-column="65" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -165,11 +165,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SymbolTable.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="SymbolTable.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/sample/SymbolTable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
-              <caret line="13" column="23" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
+            <state vertical-scroll-proportion="0.25618947" vertical-offset="0" max-vertical-offset="929">
+              <caret line="14" column="4" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -197,8 +197,8 @@
         <option value="$PROJECT_DIR$/src/sample/MainController.java" />
         <option value="$PROJECT_DIR$/src/sample/parser.java" />
         <option value="$PROJECT_DIR$/src/sample/Scope.java" />
-        <option value="$PROJECT_DIR$/src/sample/SymbolTable.java" />
         <option value="$PROJECT_DIR$/src/sample/CstToAst.java" />
+        <option value="$PROJECT_DIR$/src/sample/SymbolTable.java" />
       </list>
     </option>
   </component>
@@ -1004,16 +1004,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/sample/SymbolTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
-          <caret line="13" column="23" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/treeNode.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="408">
@@ -1024,8 +1014,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/CstToAst.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45748118" vertical-offset="765" max-vertical-offset="4760">
-          <caret line="70" column="59" selection-start-line="70" selection-start-column="59" selection-end-line="70" selection-end-column="59" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4777">
+          <caret line="42" column="65" selection-start-line="42" selection-start-column="65" selection-end-line="42" selection-end-column="65" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sample/SymbolTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.25618947" vertical-offset="0" max-vertical-offset="929">
+          <caret line="14" column="4" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
