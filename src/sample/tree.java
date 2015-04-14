@@ -69,4 +69,33 @@ public class tree {
 
     }
 
+    public String scopeString(){
+        result = "";
+        scopeReader(root, 0);
+        return result;
+    }
+
+    private void scopeReader(treeNode node, int depth){
+        if (node == null){
+            return;
+        }
+        for (int i = 0; i < depth; i++){
+            result += "+";
+        }
+
+        if (node.nodeChildren == null || node.nodeChildren.size() == 0){
+            result += "[" + node.nodeName + "]";
+            result += "(" + node.table.toString()+ ")";
+            result += "\n";
+        } else {
+            result += "<" + node.nodeName + ">";
+            result += "(" + node.table.toString()+ ")";
+            result += "\n";
+            for (int i = 0; i < node.nodeChildren.size(); i++) {
+                scopeReader(node.nodeChildren.get(i), depth + 1);
+            }
+        }
+
+    }
+
 }

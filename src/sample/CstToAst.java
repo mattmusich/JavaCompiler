@@ -10,14 +10,16 @@ public class CstToAst {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_YELLOW = "\u001B[33m";
 
-
+    public int x = 0;
     public tree tempAst = new tree();
-    public SymbolTable astHash = new SymbolTable(-1, new LinkedList<Hashtable>());
+    public tree hashTree = new tree();
+    //public SymbolTable astHash = new SymbolTable(-1, new LinkedList<Hashtable>());
 
     //defines the new ast and calls scan
     public tree convert(tree cst){
         tree ast = new tree();
         ast = scan(cst);
+        System.out.println(hashTree.scopeString());
         return ast;
     }
 
@@ -44,12 +46,11 @@ public class CstToAst {
                         tempAst.addBranchNode("block", "branch");
 
                         //Hashtable is String(ID) String(TYPE)
-                        Hashtable hashBlock = new Hashtable<String,String>();
 
-                        astHash.scope.add(hashBlock);
-                        astHash.sLevel = astHash.sLevel + 1;
-                        astHash.scope.get(astHash.sLevel);//TODO ADD A WAY TO ADD A PARENT
-                        System.out.println(ANSI_YELLOW + "HASH.NewScope @setLvl: "+ astHash.sLevel + ANSI_RESET);
+
+                        hashTree.addBranchNode("Scope"+ Integer.toString(x) ,"branch");
+                        x += x + 1;
+
 
                         for (int i = 0; i < node.nodeChildren.size(); i++) {
                             compress(node.nodeChildren.get(i));
@@ -72,19 +73,17 @@ public class CstToAst {
                         } else {} //ERROR should not happen
 
                         if  (node.nodeChildren.get(0).nodeName.equals("int")){
-                            astHash.scope.get(astHash.sLevel).put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
-                            System.out.println(ANSI_YELLOW +"HASH.Scope.IntAdded: "+ astHash.toString() + " @currentLvl " + astHash.sLevel + ANSI_RESET);
-
+                            hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, node.nodeChildren.get(0).nodeName);
+                            System.out.println(ANSI_YELLOW +"HASH.Scope.IntAdded: "+ hashTree.toString() + ANSI_RESET);
                         }
                         if  (node.nodeChildren.get(0).nodeName.equals("string")){
-                            astHash.scope.get(astHash.sLevel).put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
-                            System.out.println(ANSI_YELLOW +"HASH.Scope.StringAdded: "+ astHash.toString() + " @currentLvl " + astHash.sLevel + ANSI_RESET);
+                            hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
+                            System.out.println(ANSI_YELLOW +"HASH.Scope.StringAdded: "+ hashTree.toString() + ANSI_RESET);
 
                         }
                         if  (node.nodeChildren.get(0).nodeName.equals("boolean")){
-                            astHash.scope.get(astHash.sLevel).put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
-                            System.out.println(ANSI_YELLOW +"HASH.Scope.BooleanAdded: "+ astHash.toString() + " @currentLvl " + astHash.sLevel + ANSI_RESET);
-
+                            hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
+                            System.out.println(ANSI_YELLOW +"HASH.Scope.BooleanAdded: "+ hashTree.toString() + ANSI_RESET);
                         }
 
                         tempAst.endChildren();
@@ -262,6 +261,7 @@ public class CstToAst {
                         compress(node.nodeChildren.get(i));
                     }
                     break;
+
 
             }//end compress.case
 
