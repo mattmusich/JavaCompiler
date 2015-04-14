@@ -1,6 +1,7 @@
 package sample;
 
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
@@ -16,11 +17,14 @@ public class CstToAst {
     //public SymbolTable astHash = new SymbolTable(-1, new LinkedList<Hashtable>());
 
     //defines the new ast and calls scan
-    public tree convert(tree cst){
+    public ArrayList<Object> convert(tree cst){
         tree ast = new tree();
         ast = scan(cst);
         System.out.println(hashTree.scopeString());
-        return ast;
+        ArrayList<Object> send = new ArrayList<Object>();
+        send.add(ast);
+        send.add(hashTree.scopeString());
+        return send;
     }
 
     //scan initializes the recursive function compress with the first child of the root node(block)
@@ -46,11 +50,8 @@ public class CstToAst {
                         tempAst.addBranchNode("block", "branch");
 
                         //Hashtable is String(ID) String(TYPE)
-
-
                         hashTree.addBranchNode("Scope"+ Integer.toString(x) ,"branch");
                         x += x + 1;
-
 
                         for (int i = 0; i < node.nodeChildren.size(); i++) {
                             compress(node.nodeChildren.get(i));
@@ -72,16 +73,16 @@ public class CstToAst {
                             System.out.println("AST added varDecl right ->");
                         } else {} //ERROR should not happen
 
-                        if  (node.nodeChildren.get(0).nodeName.equals("int")){
+                        if  (node.nodeChildren.get(0).nodeName.equals("int")){ //add an int to the Hash tree
                             hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, node.nodeChildren.get(0).nodeName);
                             System.out.println(ANSI_YELLOW +"HASH.Scope.IntAdded: "+ hashTree.toString() + ANSI_RESET);
                         }
-                        if  (node.nodeChildren.get(0).nodeName.equals("string")){
+                        if  (node.nodeChildren.get(0).nodeName.equals("string")){ //add an String to the Hash tree
                             hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
                             System.out.println(ANSI_YELLOW +"HASH.Scope.StringAdded: "+ hashTree.toString() + ANSI_RESET);
 
                         }
-                        if  (node.nodeChildren.get(0).nodeName.equals("boolean")){
+                        if  (node.nodeChildren.get(0).nodeName.equals("boolean")){ //add an Boolean to the Hash tree
                             hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
                             System.out.println(ANSI_YELLOW +"HASH.Scope.BooleanAdded: "+ hashTree.toString() + ANSI_RESET);
                         }

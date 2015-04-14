@@ -120,7 +120,6 @@ public class parser {
 
         tokenStack = parseStatementList(tokenStack);
 
-        cst.endChildren();//
 
         if (!tokenStack.isEmpty()) {
             tokenStack = match("RBRACK", tokenStack);
@@ -131,6 +130,7 @@ public class parser {
             tokenStack.add(new token("RBRACK","}"));
         }
 
+        cst.endChildren();//
 
         if (!tokenStack.isEmpty()) {
             token current = tokenStack.peek();

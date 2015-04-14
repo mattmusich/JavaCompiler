@@ -68,8 +68,10 @@ public class MainController {
             CstToAst test = new CstToAst();
             tree ast = new tree();
             ast.addBranchNode("root","branch");//
-            ast = test.convert(cst);
+            ArrayList<Object> sendConvert = test.convert(cst);
+            ast = (tree)sendConvert.get(0);
             taOutput.appendText("AST\n"+ ast.toString() + "\n");
+            taOutput.appendText((String)sendConvert.get(1));
         }
 
         taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
