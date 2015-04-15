@@ -70,11 +70,12 @@ public class MainController {
             ast.addBranchNode("root","branch");//
             ArrayList<Object> sendConvert = test.convert(cst);
             ast = (tree)sendConvert.get(0);
-            if (ast.root != null) {
+            String astErrors = (String)sendConvert.get(2);
+            if (astErrors == "") {
                 taOutput.appendText("AST\n" + ast.toString() + "\n");
                 taOutput.appendText((String) sendConvert.get(1));
             } else {
-                taOutput.appendText("Error Type miss-match");
+                taOutput.appendText("AST ERRORS:\n" + astErrors);
             }
         }
 
@@ -90,9 +91,6 @@ public class MainController {
 
     }
 
-    public void appendOutput(String data){
-        taOutput.appendText(data);
-    }
 
 
     @FXML
