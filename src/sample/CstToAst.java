@@ -1,6 +1,10 @@
 package sample;
 
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -43,7 +47,12 @@ public class CstToAst {
             //this means we hit a leaf, which should only happen if we find no special nodes
             System.out.println("LEAFED " + node.nodeName);
             if (node.nodeName.equals("}")){
-                tempAst.endChildren();
+
+                if (tempAst.root == null){
+                } else {
+                    tempAst.endChildren();
+                }
+
                 hashTree.endChildren();
             }
 
@@ -136,7 +145,11 @@ public class CstToAst {
 
                                 build += "\"";
                                 tempAst.addBranchNode(build, "leaf");
-                                checkAssign(hashTree.current);
+                                if (!checkAssign(hashTree.current)){
+                                    System.out.println("CLEARED AST");
+                                    tempAst.current = null;
+                                    tempAst.root = null;
+                                }
                                 System.out.println("AST added string assignment right ->");
                             } else {
                             } //ERROR should not happen
@@ -153,7 +166,11 @@ public class CstToAst {
                                         tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                                     }
                                 }
-                                checkAssign(hashTree.current);
+                                if (!checkAssign(hashTree.current)){
+                                    System.out.println("CLEARED AST");
+                                    tempAst.current = null;
+                                    tempAst.root = null;
+                                }
                                 System.out.println("AST added int assignment right ->");
                             } else {
                             } //ERROR should not happen
@@ -164,15 +181,21 @@ public class CstToAst {
                             if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
                                 tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                                 System.out.println("AST added bool assignment right ->");
-                                checkAssign(hashTree.current);
+                                if (!checkAssign(hashTree.current)){
+                                    System.out.println("CLEARED AST");
+                                    tempAst.current = null;
+                                    tempAst.root = null;
+                                }
 
                             } else {
                             } //ERROR should not happen
                         }
 
-                        //see if the assign is there
+                        if (tempAst.root == null){
 
-                        tempAst.endChildren();
+                        } else {
+                            tempAst.endChildren();
+                        }
                     }
                     break;
                 case 'p'://Print
@@ -296,7 +319,7 @@ public class CstToAst {
 
     }// end compress
 
-    public void checkAssign(treeNode pointer){
+    public boolean checkAssign(treeNode pointer){
         System.out.println("checkAssign called");
         System.out.println("In scope: " + pointer.nodeName + " looking for: " +tempAst.current.nodeChildren.get(0).nodeName);
         if (pointer.table.containsKey(tempAst.current.nodeChildren.get(0).nodeName)){
@@ -306,33 +329,38 @@ public class CstToAst {
             if (decType.equals("int")){
                 if (tempAst.current.nodeChildren.get(1).nodeName.matches("[0-9]")){
                     System.out.println("INT assign GOOD");
-                    return;
+                    return true;
                 } else {} //error
-
             } else if (decType.equals("string")){
                 if (tempAst.current.nodeChildren.get(1).nodeName.charAt(0) == '\"'){
                     System.out.println("STRING assign GOOD");
-                    return;
+                    return true;
                 } else {} //error
 
             } else if (decType.equals("boolean")) {
                 if (tempAst.current.nodeChildren.get(1).nodeName.matches("true") || tempAst.current.nodeChildren.get(1).nodeName.matches("false")) {
                     System.out.println("BOOLEAN assign GOOD");
-                    return;
+                    return true;
                 } else {} //error
 
             }
 
+            System.out.println("Assignment didn't match type from ID specified");
+            return false;
+
         } else {
             if (pointer.nodeParent == null){
                 System.out.println("Id was never made");
-                return; //This is an error
+
+                return false; //This is an error
             } else {
                 pointer = pointer.nodeParent;
                 checkAssign(pointer);
             }
         }
 
+        System.out.println("checkAssign().ThisShouldNotHappen");
+        return false; //this shouldnt reach
     }
 
 
