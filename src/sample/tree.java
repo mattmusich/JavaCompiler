@@ -27,7 +27,7 @@ public class tree {
         } else {
             hold.nodeParent = current;
             current.nodeChildren.add(hold);
-            System.out.println("added hold to parent:");
+            System.out.println("added new node to parent:");
         }
         if (kind == "branch"){
             current = hold;

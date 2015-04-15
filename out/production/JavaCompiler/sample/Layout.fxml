@@ -35,6 +35,11 @@
                   <Font name="Segoe UI" size="15.0" />
                </font>
             </Button>
+            <Button fx:id="toggleVerbose" layoutX="-6.0" layoutY="99.0" mnemonicParsing="false" onAction="#onVerboseButtonToggle" prefHeight="50.0" prefWidth="173.0" style="-fx-background-color: #1d1d1d; -fx-border-color: #636363;" text="Verbose Toggle" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI" size="15.0" />
+               </font>
+            </Button>
          </children>
       </Pane>
    </children>

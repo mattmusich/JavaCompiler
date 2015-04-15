@@ -12,9 +12,15 @@ public class parser {
 
     public static tree cst = new tree();
     static String errorString = "";
+    static String parseLog = "";
+
+    public static void addLog(String data){
+        parseLog += data+ "\n";
+        System.out.println(data);
+    }
 
     public static ArrayList<Object> initParse(ArrayList<token> sentTokens){
-
+        parseLog = "";
         cst.root = null;
         cst.current = null;
         //set tokens to the token output from the lexer
@@ -39,6 +45,7 @@ public class parser {
         ArrayList<Object> parseSend = new ArrayList<Object>();
         parseSend.add(errorString);
         parseSend.add(cst);
+        parseSend.add(parseLog);
 
         return parseSend;
     }
@@ -49,11 +56,12 @@ public class parser {
 
 
         token current = tokenStack.remove();
-        System.out.println("current Type: "+ current.getTokenType());
-        System.out.println("current Data: "+ current.getTokenData());
+        addLog("current Type: " + current.getTokenType());
+        addLog("current Data: " + current.getTokenData());
 
         if (current.getTokenType().equals(testCase)) {
             System.out.println(ANSI_GREEN + "CASE: " + testCase + " PASSED: " + current.getToken() + ANSI_RESET);
+            addLog("CASE: " + testCase + " PASSED: " + current.getToken());
             cst.addBranchNode(current.getTokenData(),"leaf");//
 
         } else {
@@ -66,14 +74,14 @@ public class parser {
         }
 
 
-        System.out.println(testCase + ": Match finished");
+        addLog(testCase + ": Match finished");
         return tokenStack;
     }
 
     //Calls the first recursive piece -> parseProgram
     public static String parse(Queue<token> tokenStack){
 
-        System.out.println("PARSER IS STARTING: \n \n");
+        addLog("PARSER IS STARTING: \n \n");
 
         parseProgram(tokenStack);
 
@@ -81,7 +89,7 @@ public class parser {
         if (!tokenStack.isEmpty()){
 
             token test = tokenStack.peek();
-            System.out.println(test.getToken());
+            addLog(test.getToken());
 
             if (test.getTokenType().equals("RBRACK")) {
                 System.out.println("you done goofed there is a right bracket.");
@@ -91,7 +99,7 @@ public class parser {
 
         //output to console and the taOutput that sends to the main controller
         if (errorString.equals("")) {
-            System.out.println("We made it through the parse, all is good in the world");
+            addLog("We made it through the parse, all is good in the world");
             return "We made it through the parse, all is good in the world\n\nEND PARSE";
         }
         else{
@@ -153,7 +161,7 @@ public class parser {
 
         if (tokenStack.size() != 0) {
             token current = tokenStack.peek();
-            System.out.println("StatementList " + current.getToken());
+            addLog("StatementList " + current.getToken());
 
             cst.addBranchNode("statementList","branch");//
             if (!current.getTokenType().equals("RBRACK")) {
@@ -171,7 +179,7 @@ public class parser {
     public static Queue<token> parseStatement(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
-        System.out.println("Statement " + current.getToken());
+        addLog("Statement " + current.getToken());
         cst.addBranchNode("statement","branch");//
         if (!current.getTokenType().equals("QUOTE")) {
             if (current.getTokenData().equals("print")) {
@@ -226,7 +234,7 @@ public class parser {
 
     public static Queue<token> parseAssignment(Queue<token> tokenStack){
         cst.addBranchNode("assignment","branch");//
-        System.out.println("Assignment");
+        addLog("Assignment");
 
         tokenStack = parseID(tokenStack);
 
@@ -252,7 +260,7 @@ public class parser {
         cst.addBranchNode("Expr","branch");//
 
         token current = tokenStack.peek();
-        System.out.println("Expr " + current.getToken());
+        addLog("Expr " + current.getToken());
 
         if (current.getTokenType().equals("DIGIT") || current.getTokenType().equals("PLUS")){ //|| current.getTokenType().equals("ID")
             tokenStack = parseIntExpr(tokenStack);
@@ -281,7 +289,7 @@ public class parser {
         tokenStack = match("DIGIT",tokenStack);
 
         token current = tokenStack.peek();
-        System.out.println("IntExpr " + current.getToken());
+        addLog("IntExpr " + current.getToken());
 
         if(current.getTokenType().equals("PLUS")){
             tokenStack.remove();
@@ -299,6 +307,12 @@ public class parser {
         tokenStack = parseCharacterList(tokenStack);
 
         tokenStack = match("QUOTE",tokenStack);
+
+        token current = tokenStack.peek();
+        if(current.getTokenType().equals("PLUS")){
+            tokenStack.remove();
+            tokenStack = parseExpr(tokenStack);
+        }
         cst.endChildren();//
 
         return tokenStack;
@@ -307,7 +321,7 @@ public class parser {
     public static Queue<token> parseCharacterList(Queue<token> tokenStack){
         cst.addBranchNode("charList","branch");//
         token current = tokenStack.peek();
-        System.out.println("CharacterList " + current.getToken());
+        addLog("CharacterList " + current.getToken());
 
         if(current.getTokenType().equals("CHAR")){ //TODO >????
             tokenStack = match("CHAR",tokenStack);
@@ -321,19 +335,19 @@ public class parser {
     public static Queue<token> parseBooleanExpr(Queue<token> tokenStack){
         cst.addBranchNode("BoolExpr","branch");//
         token current = tokenStack.peek();
-        System.out.println("BooleanExpr " + current.getToken());
+        addLog("BooleanExpr " + current.getToken());
 
         if(current.getTokenType().equals("LPAREN")){
             tokenStack = match("LPAREN",tokenStack);
-            System.out.println("left match done");
+            addLog("left match done");
             tokenStack = parseExpr(tokenStack);
-            System.out.println("expr1 done");
+            addLog("expr1 done");
             tokenStack = parseBooleanOp(tokenStack);
-            System.out.println("boolop done");
+            addLog("boolop done");
             tokenStack = parseExpr(tokenStack);
-            System.out.println("expr2 done");
+            addLog("expr2 done");
             tokenStack = match("RPAREN",tokenStack);
-            System.out.println("right match done");
+            addLog("right match done");
         } else if (current.getTokenData().equals("true") || current.getTokenData().equals("false")){
             tokenStack = match("KEYWORD", tokenStack);
         } else {
@@ -342,6 +356,13 @@ public class parser {
             tokenStack.clear();
             tokenStack.add(new token("RBRACK","}"));
         }
+
+        token current1 = tokenStack.peek();
+        if(current1.getTokenType().equals("PLUS")){
+            tokenStack.remove();
+            tokenStack = parseExpr(tokenStack);
+        }
+
         cst.endChildren();//
 
         return tokenStack;
@@ -350,7 +371,7 @@ public class parser {
     public static Queue<token> parseBooleanOp(Queue<token> tokenStack){
 
         token current = tokenStack.peek();
-        System.out.println("BooleanOp " + current.getToken());
+        addLog("BooleanOp " + current.getToken());
 
         if(current.getTokenType().equals("DUBEQUALS")){
             tokenStack = match("DUBEQUALS",tokenStack);
@@ -369,7 +390,7 @@ public class parser {
     public static Queue<token> parseID(Queue<token> tokenStack){
         cst.addBranchNode("ID","branch");//
 
-        System.out.println("ID");
+        addLog("ID");
         tokenStack = match("ID",tokenStack);
         cst.endChildren();//
 

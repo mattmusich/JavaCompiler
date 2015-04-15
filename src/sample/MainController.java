@@ -13,6 +13,7 @@ public class MainController {
     public TextArea taOutput;
     @FXML
     private TextArea taTokens;
+    public boolean isVerboseOn;
 
 
     //Starts the lexing when pressed, and will run the parsing too
@@ -64,6 +65,8 @@ public class MainController {
             cst = (tree)parseSend.get(1);
             taOutput.appendText("CST\n"+ cst.toString() + "\n");
 
+            String parseLog = (String)parseSend.get(2);
+
             //convert the cst to ast and print
             CstToAst test = new CstToAst();
             tree ast = new tree();
@@ -72,22 +75,28 @@ public class MainController {
             ast = (tree)sendConvert.get(0);
             //see if errors
             String astErrors = (String)sendConvert.get(2);
-
+            String astLog = (String)sendConvert.get(3);
             if (astErrors == "") {
-                taOutput.appendText("AST\n" + ast.toString() + "\n");
-                taOutput.appendText((String) sendConvert.get(1));
+                taOutput.appendText("AST\n" + ast.toString() + "\n" + "\n");
+                taOutput.appendText("SCOPE TABLE\n" +(String) sendConvert.get(1) + "\n" + "\n");
             } else {
-                taOutput.appendText("AST ERRORS:\n" + astErrors);
+                taOutput.appendText("AST ERRORS:\n" + astErrors + "\n");
             }
 
 
+            if (isVerboseOn){
+                taOutput.appendText("VERBOSE LOG: " + "\n" + parseLog + "\n" + astLog + "\n");
+            }
+
         }
+
 
 
         taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
 
 
     }
+
 
 
 
@@ -100,6 +109,17 @@ public class MainController {
                 "}}$");
     }
 
+
+    @FXML
+    private void onVerboseButtonToggle(ActionEvent event) {
+        isVerboseOn = !isVerboseOn;
+        if(isVerboseOn == true){
+            taOutput.appendText("VERBOSE MODE ON");
+        } else {
+            taOutput.appendText("VERBOSE MODE OFF");
+        }
+
+    }
 
     //meant for output of the tokens that get send
     public String tokenToSting(ArrayList<token> sentTokens) {
