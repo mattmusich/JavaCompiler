@@ -10,6 +10,7 @@ public class CstToAst {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
 
     public int x = 0;
     public tree tempAst = new tree();
@@ -40,6 +41,11 @@ public class CstToAst {
 
         if (node.nodeChildren == null || node.nodeChildren.size() == 0) {
             //this means we hit a leaf, which should only happen if we find no special nodes
+            System.out.println("LEAFED " + node.nodeName);
+            if (node.nodeName.equals("}")){
+                tempAst.endChildren();
+                hashTree.endChildren();
+            }
 
         } else {
             //this means we hit a branch ast
@@ -56,6 +62,7 @@ public class CstToAst {
                         for (int i = 0; i < node.nodeChildren.size(); i++) {
                             compress(node.nodeChildren.get(i));
                         }
+
                     }
                     break;
                 case 'v'://varDecl
@@ -74,19 +81,30 @@ public class CstToAst {
                         } else {} //ERROR should not happen
 
                         if  (node.nodeChildren.get(0).nodeName.equals("int")){ //add an int to the Hash tree
-                            hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, node.nodeChildren.get(0).nodeName);
-                            System.out.println(ANSI_YELLOW +"HASH.Scope.IntAdded: "+ hashTree.toString() + ANSI_RESET);
+                            if(!hashTree.current.table.containsKey(node.nodeChildren.get(1).nodeChildren.get(0).nodeName)) {
+                                hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, node.nodeChildren.get(0).nodeName);
+                                System.out.println(ANSI_YELLOW + "HASH.Scope.IntAdded: " + hashTree.toString() + ANSI_RESET);
+                            } else {
+                                System.out.println(ANSI_PURPLE + "HASH.Scope.Int.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " Is already initialized in the scope" + ANSI_RESET);
+                            }
                         }
                         if  (node.nodeChildren.get(0).nodeName.equals("string")){ //add an String to the Hash tree
-                            hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
-                            System.out.println(ANSI_YELLOW +"HASH.Scope.StringAdded: "+ hashTree.toString() + ANSI_RESET);
+                            if(!hashTree.current.table.containsKey(node.nodeChildren.get(1).nodeChildren.get(0).nodeName)) {
+                                hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
+                                System.out.println(ANSI_YELLOW +"HASH.Scope.StringAdded: "+ hashTree.toString() + ANSI_RESET);
+                            } else {
+                                System.out.println(ANSI_PURPLE + "HASH.Scope.String.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " Is already initialized in the scope" + ANSI_RESET);
+                            }
 
                         }
-                        if  (node.nodeChildren.get(0).nodeName.equals("boolean")){ //add an Boolean to the Hash tree
-                            hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
-                            System.out.println(ANSI_YELLOW +"HASH.Scope.BooleanAdded: "+ hashTree.toString() + ANSI_RESET);
+                        if  (node.nodeChildren.get(0).nodeName.equals("boolean")) { //add an Boolean to the Hash tree
+                            if (!hashTree.current.table.containsKey(node.nodeChildren.get(1).nodeChildren.get(0).nodeName)) {
+                                hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, node.nodeChildren.get(0).nodeName);
+                                System.out.println(ANSI_YELLOW + "HASH.Scope.BooleanAdded: " + hashTree.toString() + ANSI_RESET);
+                            } else {
+                                System.out.println(ANSI_PURPLE + "HASH.Scope.Boolean.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName + " Is already initialized in the scope" + ANSI_RESET);
+                            }
                         }
-
                         tempAst.endChildren();
                     }
                     break;
@@ -118,6 +136,7 @@ public class CstToAst {
 
                                 build += "\"";
                                 tempAst.addBranchNode(build, "leaf");
+                                checkAssign(hashTree.current);
                                 System.out.println("AST added string assignment right ->");
                             } else {
                             } //ERROR should not happen
@@ -134,7 +153,7 @@ public class CstToAst {
                                         tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                                     }
                                 }
-
+                                checkAssign(hashTree.current);
                                 System.out.println("AST added int assignment right ->");
                             } else {
                             } //ERROR should not happen
@@ -145,9 +164,13 @@ public class CstToAst {
                             if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
                                 tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                                 System.out.println("AST added bool assignment right ->");
+                                checkAssign(hashTree.current);
+
                             } else {
                             } //ERROR should not happen
                         }
+
+                        //see if the assign is there
 
                         tempAst.endChildren();
                     }
@@ -258,6 +281,9 @@ public class CstToAst {
                     }
                     break;
                 default:
+
+                    System.out.println("DEFAULT " + node.nodeName);
+
                     for (int i = 0; i < node.nodeChildren.size(); i++) {
                         compress(node.nodeChildren.get(i));
                     }
@@ -269,6 +295,46 @@ public class CstToAst {
         }//end compress.else
 
     }// end compress
+
+    public void checkAssign(treeNode pointer){
+        System.out.println("checkAssign called");
+        System.out.println("In scope: " + pointer.nodeName + " looking for: " +tempAst.current.nodeChildren.get(0).nodeName);
+        if (pointer.table.containsKey(tempAst.current.nodeChildren.get(0).nodeName)){
+
+            String decType = pointer.table.get(tempAst.current.nodeChildren.get(0).nodeName).toString();
+
+            if (decType.equals("int")){
+                if (tempAst.current.nodeChildren.get(1).nodeName.matches("[0-9]")){
+                    System.out.println("INT assign GOOD");
+                    return;
+                } else {} //error
+
+            } else if (decType.equals("string")){
+                if (tempAst.current.nodeChildren.get(1).nodeName.charAt(0) == '\"'){
+                    System.out.println("STRING assign GOOD");
+                    return;
+                } else {} //error
+
+            } else if (decType.equals("boolean")) {
+                if (tempAst.current.nodeChildren.get(1).nodeName.matches("true") || tempAst.current.nodeChildren.get(1).nodeName.matches("false")) {
+                    System.out.println("BOOLEAN assign GOOD");
+                    return;
+                } else {} //error
+
+            }
+
+        } else {
+            if (pointer.nodeParent == null){
+                System.out.println("Id was never made");
+                return; //This is an error
+            } else {
+                pointer = pointer.nodeParent;
+                checkAssign(pointer);
+            }
+        }
+
+    }
+
 
 }//EOF
 

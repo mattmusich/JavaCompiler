@@ -55,6 +55,7 @@ public class parser {
         if (current.getTokenType().equals(testCase)) {
             System.out.println(ANSI_GREEN + "CASE: " + testCase + " PASSED: " + current.getToken() + ANSI_RESET);
             cst.addBranchNode(current.getTokenData(),"leaf");//
+
         } else {
             System.out.println("Expecting: " + testCase + " got " + current.getTokenType());
             errorString += "\nError at token: " + current.getToken() + " #Expecting: " + testCase + " got " + current.getTokenType();
@@ -123,6 +124,8 @@ public class parser {
 
         if (!tokenStack.isEmpty()) {
             tokenStack = match("RBRACK", tokenStack);
+
+
         } else {
             System.out.println("more left bracks than right bracks.  Stop program");
             errorString += "\nLeft Bracket is missing a paired Right Bracket. Please add or remove a Right bracket to fix the scope\n";

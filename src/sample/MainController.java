@@ -74,6 +74,7 @@ public class MainController {
             taOutput.appendText((String)sendConvert.get(1));
         }
 
+
         taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
 
         //TODO All of this VV
