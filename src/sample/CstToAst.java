@@ -91,7 +91,7 @@ public class CstToAst {
                                 System.out.println(ANSI_YELLOW + "HASH.Scope.IntAdded: " + hashTree.toString() + ANSI_RESET);
                             } else {
                                 System.out.println(ANSI_PURPLE + "HASH.Scope.Int.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " Is already initialized in the scope" + ANSI_RESET);
-                                errors += "HASH.Scope.Int.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " Is already initialized in the scope\n";
+                                errors += "HASH.Scope.Int.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " is already initialized in the scope\n";
                             }
                         }
                         if  (node.nodeChildren.get(0).nodeName.equals("string")){ //add an String to the Hash tree
@@ -100,7 +100,7 @@ public class CstToAst {
                                 System.out.println(ANSI_YELLOW +"HASH.Scope.StringAdded: "+ hashTree.toString() + ANSI_RESET);
                             } else {
                                 System.out.println(ANSI_PURPLE + "HASH.Scope.String.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " Is already initialized in the scope" + ANSI_RESET);
-                                errors += "HASH.Scope.String.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " Is already initialized in the scope\n";
+                                errors += "HASH.Scope.String.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " is already initialized in the scope\n";
                             }
 
                         }
@@ -110,7 +110,7 @@ public class CstToAst {
                                 System.out.println(ANSI_YELLOW + "HASH.Scope.BooleanAdded: " + hashTree.toString() + ANSI_RESET);
                             } else {
                                 System.out.println(ANSI_PURPLE + "HASH.Scope.Boolean.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName + " Is already initialized in the scope" + ANSI_RESET);
-                                errors += "HASH.Scope.Boolean.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName + " Is already initialized in the scope\n";
+                                errors += "HASH.Scope.Boolean.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName + " is already initialized in the scope\n";
                             }
                         }
                         tempAst.endChildren();
@@ -190,12 +190,12 @@ public class CstToAst {
                         System.out.println("AST Checking print");
                         tempAst.addBranchNode(node.nodeName, "branch");
 
-
-
                         System.out.println("print type:" + node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName);
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             System.out.println("AST added print left <-");
+                            checkPrint(hashTree.current);
+
                         } else { } //ERROR should not happen
 
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("\"")) {
@@ -212,6 +212,7 @@ public class CstToAst {
                             build += "\"";
                             tempAst.addBranchNode(build, "leaf");
                             System.out.println("AST added string assignment right ->");
+                            checkPrint(hashTree.current);
 
                         }
                             tempAst.endChildren();
@@ -232,10 +233,20 @@ public class CstToAst {
                             System.out.println("AST added dubEqualbool left <-");
                         } else {} //ERROR should not happen
 
+                        if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[0-9]")) {
+                            tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+                            System.out.println("AST added dubEqualbool left <-");
+                        } else {} //ERROR should not happen
+
+                        if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("true") || node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("false") ) {
+                            tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+                            System.out.println("AST added dubEqualbool left <-");
+                        } else {} //ERROR should not happen
+
                         if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("\"")) {
                             treeNode stringNode = node.nodeChildren.get(1).nodeChildren.get(0);
                             String build = "";
-                            System.out.println("ASDF"+stringNode.nodeName);
+                            System.out.println("ASDF LEFT"+stringNode.nodeName);
 
                             while (stringNode.nodeChildren.size() >= 2){
                                 System.out.println("string build: "+ stringNode.nodeChildren.get(0).nodeName);
@@ -254,10 +265,20 @@ public class CstToAst {
                             System.out.println("AST added dubEqualbool right ->");
                         } else {} //ERROR should not happen
 
+                        if (node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[0-9]")) {
+                            tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+                            System.out.println("AST added dubEqualbool right ->");
+                        } else {} //ERROR should not happen
+
+                        if (node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("true") || node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("false") ) {
+                            tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+                            System.out.println("AST added dubEqualbool right ->");
+                        } else {} //ERROR should not happen
+
                         if (node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("\"")) {
-                            treeNode stringNode = node.nodeChildren.get(1).nodeChildren.get(0);
+                            treeNode stringNode = node.nodeChildren.get(4).nodeChildren.get(0);
                             String build = "";
-                            System.out.println("ASDF"+stringNode.nodeName);
+                            System.out.println("ASDF RIGHT"+stringNode.nodeName);
 
                             while (stringNode.nodeChildren.size() >= 2){
                                 System.out.println("string build: "+ stringNode.nodeChildren.get(0).nodeName);
@@ -267,11 +288,22 @@ public class CstToAst {
 
                             build += "\"";
                             tempAst.addBranchNode(build, "leaf");
-                            System.out.println("AST added string assignment <-");
+                            System.out.println("AST added string assignment ->");
 
                         }
 
-                        tempAst.endChildren();
+                        System.out.println(tempAst.current.nodeName);
+
+
+                        System.out.println(checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current));
+                        System.out.println(checkType(tempAst.current.nodeChildren.get(1).nodeName, hashTree.current));
+                        if ((checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current)).equals(checkType(tempAst.current.nodeChildren.get(1).nodeName,hashTree.current))){
+                            System.out.println("COMPARE MATCHES");
+                        } else {
+                            System.out.println("NO MATCHE");
+                        }
+
+                            tempAst.endChildren();
                     }
                     break;
                 case 'W'://While
@@ -348,9 +380,53 @@ public class CstToAst {
             }
         }
 
-        System.out.println("checkAssign().ThisShouldNotHappen");
     }
 
+    public void checkPrint(treeNode pointer){
+        System.out.println("checkPrint called");
+        System.out.println("In scope: " + pointer.nodeName + " looking for: " +tempAst.current.nodeChildren.get(0).nodeName);
+        if (pointer.table.containsKey(tempAst.current.nodeChildren.get(0).nodeName)){
+
+            System.out.println("Print Check GOOD");
+
+        } else {
+            if (pointer.nodeParent == null){
+                System.out.println("Id was never made. Cannot print");
+                errors += "Id was never made. Cannot print\n";
+            } else {
+                pointer = pointer.nodeParent;
+                checkPrint(pointer);
+            }
+        }
+
+    }
+
+    public String checkType(String testcase, treeNode pointer){
+        System.out.println("In scope: " + pointer.nodeName + " looking for type: " + testcase);
+
+
+        if (testcase.matches("[a-z]")){
+            if(pointer.table.containsKey(testcase)){
+                return pointer.table.get(testcase).toString();
+            } else {
+                if (pointer.nodeParent == null){
+                    System.out.println("Id was never made. Cannot type");
+                    errors += "Id was never made. Cannot type\n";
+                } else {
+                    pointer = pointer.nodeParent;
+                    checkPrint(pointer);
+                }
+            }
+        } else if (testcase.matches("[0-9]")){
+            return "int";
+        } else if (testcase.charAt(0) == '\"'){
+            return "string";
+        } else if (testcase.matches("true") || testcase.matches("false")) {
+            return "boolean";
+        }
+
+        return "NOT A TYPE ERROR";
+    }
 
 }//EOF
 

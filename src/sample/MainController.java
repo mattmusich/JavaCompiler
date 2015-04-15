@@ -70,24 +70,22 @@ public class MainController {
             ast.addBranchNode("root","branch");//
             ArrayList<Object> sendConvert = test.convert(cst);
             ast = (tree)sendConvert.get(0);
+            //see if errors
             String astErrors = (String)sendConvert.get(2);
+
             if (astErrors == "") {
                 taOutput.appendText("AST\n" + ast.toString() + "\n");
                 taOutput.appendText((String) sendConvert.get(1));
             } else {
                 taOutput.appendText("AST ERRORS:\n" + astErrors);
             }
+
+
         }
 
 
         taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
 
-        //TODO All of this VV
-
-        //CST to AST class
-
-
-        //build hash table scope of tree based on AST
 
     }
 
