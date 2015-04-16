@@ -65,6 +65,7 @@ public class CstToAst {
             }
 
         } else {
+
             //this means we hit a branch ast
             switch (node.nodeName.charAt(0)) {
                 case 'b': //block
@@ -362,7 +363,7 @@ public class CstToAst {
                             build += "\"";
                             tempAst.addBranchNode(build, "leaf");
                             addLog("AST added string assignment right ->");
-                            checkPrint(hashTree.current);
+                            //checkPrint(hashTree.current);  TODO MIGHT MAKE A BUG
 
                         }
                             tempAst.endChildren();
@@ -453,7 +454,7 @@ public class CstToAst {
                             addLog("COMPARE MATCHES");
                         } else {
                             System.out.println("NO MATCH");
-                            errors += checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current) + " doesnt match " + checkType(tempAst.current.nodeChildren.get(1).nodeName, hashTree.current);
+                            errors += "Type: "+checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current) + " doesn't match " + checkType(tempAst.current.nodeChildren.get(1).nodeName, hashTree.current) + "\n";
                         }
 
                             tempAst.endChildren();
@@ -575,7 +576,7 @@ public class CstToAst {
         } else {
             if (pointer.nodeParent == null){
                 System.out.println("Id: " + tempAst.current.nodeChildren.get(0).nodeName +" was never made Cannot print");
-                errors += "Id: " + tempAst.current.nodeChildren.get(0).nodeName + "was never made. Cannot print\n";
+                errors += "Id: " + tempAst.current.nodeChildren.get(0).nodeName + " was never made. Cannot print\n";
             } else {
                 pointer = pointer.nodeParent;
                 checkPrint(pointer);
@@ -594,10 +595,10 @@ public class CstToAst {
             } else {
                 if (pointer.nodeParent == null){
                     System.out.println("Id: " + testcase +" was never made Cannot type");
-                    errors += "Id: " + testcase + "was never made. Cannot type\n";
+                    errors += "Id: " + testcase + " was never made. Cannot type\n";
                 } else {
                     pointer = pointer.nodeParent;
-                    checkPrint(pointer); //TODO IS THIS SUPPOSE TO BE checkType
+                    checkType(testcase, pointer); //TODO IS THIS SUPPOSE TO BE checkType
                 }
             }
         } else if (testcase.matches("[0-9]")){
@@ -608,7 +609,7 @@ public class CstToAst {
             return "boolean";
         }
 
-        return "NOT A TYPE: ERROR";
+        return "NOT A TYPE.ERROR. " + testcase + " <- is not a type\n";
     }
 
 }//EOF
