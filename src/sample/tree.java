@@ -14,6 +14,7 @@ public class tree {
         current = null;
     }
 
+    //add a new node and class it as a branch or leaf in the 2nd param
     //String nodeName, treeNode nodeParent, ArrayList<treeNode> nodeChildren
     public void addBranchNode(String name, String kind){
 

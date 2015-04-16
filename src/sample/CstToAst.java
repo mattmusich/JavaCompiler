@@ -2,6 +2,7 @@ package sample;
 
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class CstToAst {
 
@@ -15,6 +16,7 @@ public class CstToAst {
     public tree hashTree = new tree();
     public String errors = "";
     public String logString = "";
+    public Hashtable unused = new Hashtable<String,String>();
     //public SymbolTable astHash = new SymbolTable(-1, new LinkedList<Hashtable>());
 
     //defines the new ast and calls scan
@@ -22,11 +24,13 @@ public class CstToAst {
         tree ast = new tree();
         ast = scan(cst);
         System.out.println(hashTree.scopeString());
+        System.out.println(unused.toString());
         ArrayList<Object> send = new ArrayList<Object>();
         send.add(ast);
         send.add(hashTree.scopeString());
         send.add(errors);
         send.add(logString);
+        send.add(unused);
         return send;
     }
 
@@ -98,6 +102,7 @@ public class CstToAst {
                                 hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, node.nodeChildren.get(0).nodeName);
                                 System.out.println(ANSI_YELLOW + "HASH.Scope.IntAdded: " + hashTree.toString() + ANSI_RESET);
                                 addLog("HASH.Scope.IntAdded: " + hashTree.toString());
+                                unused.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,"");
                             } else {
                                 System.out.println(ANSI_PURPLE + "HASH.Scope.Int.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " Is already initialized in the scope" + ANSI_RESET);
                                 errors += "HASH.Scope.Int.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " is already initialized in the scope\n";
@@ -108,6 +113,7 @@ public class CstToAst {
                                 hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
                                 System.out.println(ANSI_YELLOW +"HASH.Scope.StringAdded: "+ hashTree.toString() + ANSI_RESET);
                                 addLog("HASH.Scope.StringAdded: " + hashTree.toString());
+                                unused.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,"");
                             } else {
                                 System.out.println(ANSI_PURPLE + "HASH.Scope.String.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " Is already initialized in the scope" + ANSI_RESET);
                                 errors += "HASH.Scope.String.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " is already initialized in the scope\n";
@@ -119,6 +125,7 @@ public class CstToAst {
                                 hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, node.nodeChildren.get(0).nodeName);
                                 System.out.println(ANSI_YELLOW + "HASH.Scope.BooleanAdded: " + hashTree.toString() + ANSI_RESET);
                                 addLog("HASH.Scope.BooleanAdded: " + hashTree.toString());
+                                unused.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,"");
                             } else {
                                 System.out.println(ANSI_PURPLE + "HASH.Scope.Boolean.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName + " Is already initialized in the scope" + ANSI_RESET);
                                 errors += "HASH.Scope.Boolean.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName + " is already initialized in the scope\n";
@@ -509,10 +516,14 @@ public class CstToAst {
         if (pointer.table.containsKey(tempAst.current.nodeChildren.get(0).nodeName)){
 
             String decType = pointer.table.get(tempAst.current.nodeChildren.get(0).nodeName).toString();
+            String varInQuestion = tempAst.current.nodeChildren.get(0).nodeName;
+            //TODO
+
 
             if (decType.equals("int")){
                 if (tempAst.current.nodeChildren.get(1).nodeName.matches("[0-9]")){
                     addLog("INT assign GOOD");
+                    unused.put(varInQuestion, "true");
                 } else {
                     System.out.println("Assignment didn't match INT from ID specified:" + tempAst.current.nodeChildren.get(1).nodeName);
                     errors += "Assignment didn't match INT from ID specified:" + tempAst.current.nodeChildren.get(1).nodeName + "\n";
@@ -520,6 +531,7 @@ public class CstToAst {
             } else if (decType.equals("string")){
                 if (tempAst.current.nodeChildren.get(1).nodeName.charAt(0) == '\"'){
                     addLog("STRING assign GOOD");
+                    unused.put(varInQuestion,"true");
                 } else {
                     System.out.println("Assignment didn't match STRING from ID specified:" + tempAst.current.nodeChildren.get(1).nodeName);
                     errors += "Assignment didn't match STRING from ID specified:" + tempAst.current.nodeChildren.get(1).nodeName + "\n";
@@ -529,6 +541,7 @@ public class CstToAst {
                 addLog("CHECKING Boolean: " + tempAst.current.nodeChildren.get(1).nodeName);
                 if (tempAst.current.nodeChildren.get(1).nodeName.matches("true") || tempAst.current.nodeChildren.get(1).nodeName.matches("false")) {  //TODO ADD MY CASES HERE
                     addLog("BOOLEAN assign GOOD");
+                    unused.put(varInQuestion,"true");
                 } else if (tempAst.current.nodeChildren.get(1).nodeName.equals("Comp ==") || tempAst.current.nodeChildren.get(1).nodeName.equals("Comp !=")){
 
 

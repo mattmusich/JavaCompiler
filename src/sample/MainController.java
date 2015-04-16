@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Set;
 
 public class MainController {
     @FXML
@@ -76,8 +78,20 @@ public class MainController {
             //see if errors
             String astErrors = (String)sendConvert.get(2);
             String astLog = (String)sendConvert.get(3);
+            Hashtable hashChecks = (Hashtable)sendConvert.get(4);
+
+            Set<String> keys = hashChecks.keySet();
+            for(String key: keys){
+                if( hashChecks.get(key) == ""){
+                    System.out.println("WARN: Declared Variable: " + key + " was unused in program" );
+                    taOutput.appendText("WARN: Declared Variable: " + key + " was unused in program\n" );
+                } else {
+                    System.out.println("All Variables are used");
+                }
+            }
+
             if (astErrors == "") {
-                taOutput.appendText("AST\n" + ast.toString() + "\n" + "\n");
+                taOutput.appendText("\nAST\n" + ast.toString() + "\n" + "\n");
                 taOutput.appendText("SCOPE TABLE\n" +(String) sendConvert.get(1) + "\n" + "\n");
             } else {
                 taOutput.appendText("AST ERRORS:\n" + astErrors + "\n");
