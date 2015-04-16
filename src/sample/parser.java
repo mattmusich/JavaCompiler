@@ -100,7 +100,7 @@ public class parser {
         //output to console and the taOutput that sends to the main controller
         if (errorString.equals("")) {
             addLog("We made it through the parse, all is good in the world");
-            return "We made it through the parse, all is good in the world\n\nEND PARSE";
+            return "";
         }
         else{
             return "\nERRORS:" + errorString;
@@ -143,16 +143,22 @@ public class parser {
 
         cst.endChildren();//
 
-        if (!tokenStack.isEmpty()) {
-            token current = tokenStack.peek();
-            //System.out.println("Final token" + current.getToken());
+        if(tokenStack.size() > 2){
 
-            if (current.getTokenType().equals("LBRACK")) {
-                errorString += "\nLeft Brace out of scope please make sure all braces are within the main scope \n";
-                errorString += "\nErrors have occured, please fix all reported errors before continuing.\n";
+        } else {
+
+            if (!tokenStack.isEmpty()) {
+                token current = tokenStack.peek();
+                //System.out.println("Final token" + current.getToken());
+
+                if (current.getTokenType().equals("LBRACK")) {
+                    System.out.println("Left Brace out of scope please make sure all braces are within the main scope");
+
+                    errorString += "\nLeft Brace out of scope please make sure all braces are within the main scope \n";
+                    errorString += "\nErrors have occured, please fix all reported errors before continuing.\n";
+                }
             }
         }
-
         return tokenStack;
     }
 

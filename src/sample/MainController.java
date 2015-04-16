@@ -61,45 +61,49 @@ public class MainController {
             String parsedString = parseSend.get(0).toString();
             taOutput.appendText("Parse Status: \n" + parsedString + "\n" );
 
-            //print cst from parse
-            tree cst = new tree();
+            if (parsedString.equals("")) {
+                taOutput.appendText("Parse Complete, No errors\n\n\n"  );
 
-            cst = (tree)parseSend.get(1);
-            taOutput.appendText("CST\n"+ cst.toString() + "\n");
+                //print cst from parse
+                tree cst = new tree();
 
-            String parseLog = (String)parseSend.get(2);
+                cst = (tree) parseSend.get(1);
+                taOutput.appendText("CST\n" + cst.toString() + "\n");
 
-            //convert the cst to ast and print
-            CstToAst test = new CstToAst();
-            tree ast = new tree();
-            ast.addBranchNode("root","branch");//
-            ArrayList<Object> sendConvert = test.convert(cst);
-            ast = (tree)sendConvert.get(0);
-            //see if errors
-            String astErrors = (String)sendConvert.get(2);
-            String astLog = (String)sendConvert.get(3);
-            Hashtable hashChecks = (Hashtable)sendConvert.get(4);
+                String parseLog = (String) parseSend.get(2);
 
-            Set<String> keys = hashChecks.keySet();
-            for(String key: keys){
-                if( hashChecks.get(key) == ""){
-                    System.out.println("WARN: Declared Variable: " + key + " was unused in program" );
-                    taOutput.appendText("WARN: Declared Variable: " + key + " was unused in program\n" );
-                } else {
-                    System.out.println("All Variables are used");
+                //convert the cst to ast and print
+                CstToAst test = new CstToAst();
+                tree ast = new tree();
+                ast.addBranchNode("root", "branch");//
+                ArrayList<Object> sendConvert = test.convert(cst);
+                ast = (tree) sendConvert.get(0);
+                //see if errors
+                String astErrors = (String) sendConvert.get(2);
+                String astLog = (String) sendConvert.get(3);
+                Hashtable hashChecks = (Hashtable) sendConvert.get(4);
+
+                Set<String> keys = hashChecks.keySet();
+                for (String key : keys) {
+                    if (hashChecks.get(key) == "") {
+                        System.out.println("WARN: Declared Variable: " + key + " was unused in program");
+                        taOutput.appendText("WARN: Declared Variable: " + key + " was unused in program\n");
+                    } else {
+                        System.out.println("All Variables are used");
+                    }
                 }
-            }
 
-            if (astErrors == "") {
-                taOutput.appendText("\nAST\n" + ast.toString() + "\n" + "\n");
-                taOutput.appendText("SCOPE TABLE\n" +(String) sendConvert.get(1) + "\n" + "\n");
-            } else {
-                taOutput.appendText("AST ERRORS:\n" + astErrors + "\n");
-            }
+                if (astErrors == "") {
+                    taOutput.appendText("\nAST\n" + ast.toString() + "\n" + "\n");
+                    taOutput.appendText("SCOPE TABLE\n" + (String) sendConvert.get(1) + "\n" + "\n");
+                } else {
+                    taOutput.appendText("AST ERRORS:\n" + astErrors + "\n");
+                }
 
 
-            if (isVerboseOn){
-                taOutput.appendText("VERBOSE LOG: " + "\n" + parseLog + "\n" + astLog + "\n");
+                if (isVerboseOn) {
+                    taOutput.appendText("VERBOSE LOG: " + "\n" + parseLog + "\n" + astLog + "\n");
+                }
             }
 
         }
