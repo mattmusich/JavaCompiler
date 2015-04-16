@@ -220,6 +220,10 @@ public class CstToAst {
 
                                 for (int i = 0; i < intBuild.size(); i++){
                                     addLog("addIntBuild: " + intBuild.get(i));
+                                    if(intBuild.get(i).equals("true") || intBuild.get(i).equals("false")){
+                                        System.out.println("Type miss-match in int: "+ intBuild.get(i) );
+                                        errors += "Type miss-match in int" + intBuild.get(i);
+                                    }
                                     tempAst.addBranchNode(intBuild.get(i),"branch");
                                 }
                                 for (int i = 0; i < intBuild.size(); i++){
@@ -237,23 +241,92 @@ public class CstToAst {
                         //bool
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeName.equals("BoolExpr")) {
                             if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
-                                tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+                                //tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
 
-                                //TODO ADD SOME STUFF HERE
+                                if(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName == "("){
+                                    //tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeName, "branch");
+                                    treeNode boolExprish = node.nodeChildren.get(2).nodeChildren.get(0);
+                                    if(boolExprish.nodeChildren.get(3).nodeName == "dubEqualBool"){
+                                        tempAst.addBranchNode("Comp ==", "branch");
+                                    } else {
+                                        tempAst.addBranchNode("Comp !=", "branch");
+                                    }
+
+
+                                    String boolLeftType = "";
+                                    String boolRightType = "";
+
+                                    if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("\"")) {
+                                        treeNode stringNode = node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(1).nodeChildren.get(0);
+                                        String build = "";
+                                        addLog("BoolStringBuild" + stringNode.nodeName);
+
+                                        while (stringNode.nodeChildren.size() >= 2){
+                                            addLog("string build: " + stringNode.nodeChildren.get(0).nodeName);
+                                            build += stringNode.nodeChildren.get(0).nodeName;
+                                            stringNode = stringNode.nodeChildren.get(1);
+                                        }
+
+                                        build += "\"";
+                                        tempAst.addBranchNode(build, "leaf");
+                                        boolLeftType = getType(build);
+                                        addLog("AST added string assignment left <-");
+                                        //checkPrint(hashTree.current);
+
+                                    } else {
+                                        tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName,"leaf");
+                                        boolLeftType = getType(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName);
+                                    }
+
+                                    if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("\"")) {
+                                        treeNode stringNode = node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(4).nodeChildren.get(0);
+                                        String build = "";
+                                        addLog("BoolStringBuild" + stringNode.nodeName);
+
+                                        while (stringNode.nodeChildren.size() >= 2){
+                                            addLog("string build: " + stringNode.nodeChildren.get(0).nodeName);
+                                            build += stringNode.nodeChildren.get(0).nodeName;
+                                            stringNode = stringNode.nodeChildren.get(1);
+                                        }
+
+                                        build += "\"";
+                                        tempAst.addBranchNode(build, "leaf");
+                                        boolRightType = getType(build);
+                                        addLog("AST added string assignment right ->");
+                                        //checkPrint(hashTree.current);
+
+                                    } else {
+                                        tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+                                        boolRightType = getType(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName);
+                                    }
+
+                                    if(boolLeftType == boolRightType){
+                                        addLog("The boolean expression matches types! "+boolLeftType + " and " + boolRightType);
+                                    } else {
+                                        System.out.println("The boolean expression doesn't match " +boolLeftType + " and " + boolRightType);
+                                        errors += "The boolean expression doesn't match " +boolLeftType + " and " + boolRightType + "\n";
+                                    }
+
+                                    tempAst.endChildren();
+                                    } else {
+                                    tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+                                }
+
+                                }
 
                                 addLog("AST added bool assignment right ->");
                                 checkAssign(hashTree.current);
 
-                            } else {
-                            } //ERROR should not happen
-                        }
+                        } else {
+                        } //ERROR should not happen
+                    }
 
                         if (tempAst.root == null){
 
                         } else {
                             tempAst.endChildren();
                         }
-                    }
+
                     break;
                 case 'p'://Print
                     if (node.nodeName.equals("print")) {
@@ -291,6 +364,8 @@ public class CstToAst {
                 case 'B': //DUB EQUALS  NOT EQUALS
                     if (node.nodeName.equals("BoolExpr")) {
                         addLog("AST Checking BoolExpr");
+
+                        addLog(node.nodeChildren.get(0).nodeName);
 
                         if(node.nodeChildren.get(3).nodeName == "dubEqualBool") {
                             tempAst.addBranchNode("Comp ==", "branch");
@@ -409,6 +484,24 @@ public class CstToAst {
 
     }// end compress
 
+
+    public String getType(String data){
+        if(data.matches("[0-9]")){
+            return "int";
+        }
+        if(data.equals("true") || data.equals("false")){
+            return "boolean";
+        }
+        if(data.matches("[a-z]")){
+            return "ID";
+        }
+        if(data.charAt(0) == '\"'){
+            return "string";
+        }
+        return null;
+    }
+
+
     public void checkAssign(treeNode pointer){
         addLog("checkAssign called");
         addLog(tempAst.current.nodeName);
@@ -436,22 +529,8 @@ public class CstToAst {
                 addLog("CHECKING Boolean: " + tempAst.current.nodeChildren.get(1).nodeName);
                 if (tempAst.current.nodeChildren.get(1).nodeName.matches("true") || tempAst.current.nodeChildren.get(1).nodeName.matches("false")) {  //TODO ADD MY CASES HERE
                     addLog("BOOLEAN assign GOOD");
-                } else if (tempAst.current.nodeChildren.get(1).nodeName.matches("[(]")){
+                } else if (tempAst.current.nodeChildren.get(1).nodeName.equals("Comp ==") || tempAst.current.nodeChildren.get(1).nodeName.equals("Comp !=")){
 
-//                    addLog(tempAst.current.nodeName);
-//                    String leftComp = "";
-//                    String rightComp = "";
-//                    if(tempAst.current.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[true]")){
-//                        leftComp = "boolean";
-//                    }
-//                    if(tempAst.current.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[true]")){
-//                        rightComp = "boolean";
-//                    }
-//
-//                    addLog(leftComp + " " + rightComp);
-//                    if(leftComp == rightComp){
-//                        addLog("BOOLEANS MATCH UP");
-//                    }
 
 
                 } else {
