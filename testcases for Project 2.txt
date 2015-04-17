@@ -1,0 +1,19 @@
+{boolean a a = (true != false )}$
+{boolean a a = (1 == 2 )}$
+{boolean a a = ("a" == 2 )}$
+{boolean a a = ("a" == true )}$
+{boolean a a = (false != 1)}$
+
+
+{string a { int a{a =5} a =4 } }$
+{int a { string a{a =5} a =4 } }$
+{int a { {a =5} a =4 }}$
+{int a { string a a = "c"} a = 5}$
+{string a a ="as" print(a)}$
+{int a boolean a string a a = 5}$
+{int a boolean a {string a a = "as"}}$
+{boolean a {string a a = "as"}}$
+
+{ {int a} {a = 5} }$
+{ string a {int a {a = 6}} {boolean a} {} a = "test" }$
+{ boolean a {{{ { a = false } }}} }$

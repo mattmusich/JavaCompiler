@@ -1,5 +1,0 @@
-{intaa=1
-print(a)stringb  b = "Hey Alan"
-if(b == "Hey Alan"){
-print(b)
-}}
