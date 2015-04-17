@@ -366,6 +366,24 @@ public class CstToAst {
                             //checkPrint(hashTree.current);  TODO MIGHT MAKE A BUG
 
                         }
+
+                        if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[0-9]")) {
+                            tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+                            addLog("AST added print left <-");
+                            //checkPrint(hashTree.current);
+
+                        } else { } //ERROR should not happen
+
+                        if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("true") || node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("false")) {
+                            tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+                            addLog("AST added print left <-");
+                            //checkPrint(hashTree.current);
+
+                        } else { } //ERROR should not happen
+
+
+
+
                             tempAst.endChildren();
                     }
                     break;
