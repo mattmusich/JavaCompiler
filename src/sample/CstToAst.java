@@ -17,9 +17,9 @@ public class CstToAst {
     public String errors = "";
     public String logString = "";
     public Hashtable unused = new Hashtable<String,String>();
-    //public SymbolTable astHash = new SymbolTable(-1, new LinkedList<Hashtable>());
 
     //defines the new ast and calls scan
+    //the arraylist allows sending back multiple pieces of data
     public ArrayList<Object> convert(tree cst){
         tree ast = new tree();
         ast = scan(cst);
@@ -40,6 +40,7 @@ public class CstToAst {
         return tempAst;
     }
 
+    //keeps track of all logging in the analysis for verbose mode, along with throwing it to console
     public void addLog(String data){
         logString += data+ "\n";
         System.out.println(data);
@@ -51,22 +52,23 @@ public class CstToAst {
         System.out.println(ANSI_CYAN + "COMPRESS: Current Node: " + node.nodeName + ANSI_RESET);
         addLog("COMPRESS: Current Node: " + node.nodeName);
 
+        //If this is true we hit a leaf, which should only happen if we find no special nodes or reach the EOF
         if (node.nodeChildren == null || node.nodeChildren.size() == 0) {
-            //this means we hit a leaf, which should only happen if we find no special nodes
             addLog("LEAFED " + node.nodeName);
             if (node.nodeName.equals("}")){
-
                 if (tempAst.root == null){
                 } else {
                     tempAst.endChildren();
                 }
-
                 hashTree.endChildren();
             }
 
         } else {
-
             //this means we hit a branch ast
+
+            //This switch case will check for each type of special node, Block, varDecl, assignment, print, boolExpr, while, if
+            //Since Java is a special child, switch case has trouble supporting string comparisons
+            //This is why I need to use the first char instead(which is stupid as hell in my opinion)
             switch (node.nodeName.charAt(0)) {
                 case 'b': //block
                     if (node.nodeName.equals("block")) {
@@ -89,15 +91,20 @@ public class CstToAst {
                         tempAst.addBranchNode(node.nodeName, "branch");
 
                         addLog("Decl type:" + node.nodeChildren.get(0).nodeName);
+
+                        //looks to see if the right branch of varDecl is one of our types
                         if (node.nodeChildren.get(0).nodeName.equals("int") || node.nodeChildren.get(0).nodeName.equals("string") || node.nodeChildren.get(0).nodeName.equals("boolean")) {
                             tempAst.addBranchNode(node.nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added varDecl left <-");
                         } else {} //ERROR should not happen
+
+                        //check right branch to see if ID
                         if (node.nodeChildren.get(1).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added varDecl right ->");
                         } else {} //ERROR should not happen
 
+                        //check right branch to see if int
                         if  (node.nodeChildren.get(0).nodeName.equals("int")){ //add an int to the Hash tree
                             if(!hashTree.current.table.containsKey(node.nodeChildren.get(1).nodeChildren.get(0).nodeName)) {
                                 hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, node.nodeChildren.get(0).nodeName);
@@ -109,6 +116,8 @@ public class CstToAst {
                                 errors += "HASH.Scope.Int.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " is already initialized in the scope\n";
                             }
                         }
+
+                        //check right branch to see if string
                         if  (node.nodeChildren.get(0).nodeName.equals("string")){ //add an String to the Hash tree
                             if(!hashTree.current.table.containsKey(node.nodeChildren.get(1).nodeChildren.get(0).nodeName)) {
                                 hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName,node.nodeChildren.get(0).nodeName);
@@ -119,8 +128,8 @@ public class CstToAst {
                                 System.out.println(ANSI_PURPLE + "HASH.Scope.String.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " Is already initialized in the scope" + ANSI_RESET);
                                 errors += "HASH.Scope.String.ERROR: ID: " + node.nodeChildren.get(1).nodeChildren.get(0).nodeName+ " is already initialized in the scope\n";
                             }
-
                         }
+                        //check right branch to see if boolean
                         if  (node.nodeChildren.get(0).nodeName.equals("boolean")) { //add an Boolean to the Hash tree
                             if (!hashTree.current.table.containsKey(node.nodeChildren.get(1).nodeChildren.get(0).nodeName)) {
                                 hashTree.current.table.put(node.nodeChildren.get(1).nodeChildren.get(0).nodeName, node.nodeChildren.get(0).nodeName);
@@ -139,27 +148,27 @@ public class CstToAst {
                     if (node.nodeName.equals("assignment")) {
                         addLog("AST Checking assignment");
                         tempAst.addBranchNode(node.nodeName, "branch");
-
                         addLog("assign type:" + node.nodeChildren.get(0).nodeChildren.get(0).nodeName);
-                        //id
+
+                        //id Left branch
                         if (node.nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added assignment left <-");
                         } else {} //ERROR should not happen
 
-                        //string
+                        //string right branch
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeName.equals("stringExpr")){
                             if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
 
                                 addLog("exprNode start: " + node.nodeChildren.get(2).nodeChildren.get(0).nodeName);
                                 treeNode exprNode = node.nodeChildren.get(2).nodeChildren.get(0);
-
+                                //exprNode loops through the StringExpr nodes in the tree
                                 while(exprNode.nodeChildren.size() >= 4) {
                                     treeNode stringNode = exprNode;
-
                                     String build = "";
                                     addLog("ASDF" + stringNode.nodeName);
 
+                                    //string node allows a loop through charList children (the letters in a string)
                                     while (stringNode.nodeChildren.size() >= 2) {
                                         addLog("string build: " + stringNode.nodeChildren.get(0).nodeName);
                                         build += stringNode.nodeChildren.get(0).nodeName;
@@ -176,6 +185,8 @@ public class CstToAst {
 
                                 }
 
+                                //when the whiles are done, there is one stringExpr that doesnt fit the loop case.
+                                // this accounts for it
                                 if(exprNode.nodeChildren.size() == 3){
                                     treeNode stringNode = exprNode;
 
@@ -201,7 +212,7 @@ public class CstToAst {
                             } //ERROR should not happen
                         }
 
-                        //int
+                        //int right branch
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeName.equals("IntExpr")) {
 
                             if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
@@ -246,7 +257,7 @@ public class CstToAst {
                             } //ERROR should not happen
                         }
 
-                        //bool
+                        //bool right branch
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeName.equals("BoolExpr")) {
                             if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
                                 //tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
@@ -329,8 +340,8 @@ public class CstToAst {
                         } //ERROR should not happen
                     }
 
+                    //This looks important, but forget why assignment needs it
                         if (tempAst.root == null){
-
                         } else {
                             tempAst.endChildren();
                         }
@@ -340,19 +351,20 @@ public class CstToAst {
                     if (node.nodeName.equals("print")) {
                         addLog("AST Checking print");
                         tempAst.addBranchNode(node.nodeName, "branch");
-
                         addLog("print type:" + node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName);
+
+                        //printing an id
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added print left <-");
                             checkPrint(hashTree.current);
-
                         } else { } //ERROR should not happen
 
+                        //printing a string
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("\"")) {
-
                             treeNode exprNode = node.nodeChildren.get(2).nodeChildren.get(0);
 
+                            //same process as the assignment version
                             while (exprNode.nodeChildren.size() >= 4) {
                                 treeNode stringNode = exprNode;
                                 String build = "";
@@ -371,6 +383,7 @@ public class CstToAst {
                                 exprNode = exprNode.nodeChildren.get(3).nodeChildren.get(0);
                             }
 
+                            //same process as the assignment version
                             if (exprNode.nodeChildren.size() == 3) {
                                 treeNode stringNode = exprNode;
                                 String build = "";
@@ -390,6 +403,7 @@ public class CstToAst {
 
                         }
 
+                        //printing an int
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[0-9]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added print left <-");
@@ -397,15 +411,13 @@ public class CstToAst {
 
                         } else { } //ERROR should not happen
 
+                        //printing true or false
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("true") || node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("false")) {
                             tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added print left <-");
                             //checkPrint(hashTree.current);
 
                         } else { } //ERROR should not happen
-
-
-
 
                             tempAst.endChildren();
                     }
@@ -416,27 +428,32 @@ public class CstToAst {
 
                         addLog(node.nodeChildren.get(0).nodeName);
 
+                        //determines the type of comparison
                         if(node.nodeChildren.get(3).nodeName == "dubEqualBool") {
                             tempAst.addBranchNode("Comp ==", "branch");
                         } else{
                             tempAst.addBranchNode("Comp !=", "branch");
                         }
 
+                        //left is id
                         if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added dubEqualbool left <-");
                         } else {} //ERROR should not happen
 
+                        //left is int
                         if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[0-9]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added dubEqualbool left <-");
                         } else {} //ERROR should not happen
 
+                        //left is boolean
                         if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("true") || node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("false") ) {
                             tempAst.addBranchNode(node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added dubEqualbool left <-");
                         } else {} //ERROR should not happen
 
+                        //left is string
                         if (node.nodeChildren.get(1).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("\"")) {
                             treeNode stringNode = node.nodeChildren.get(1).nodeChildren.get(0);
                             String build = "";
@@ -454,21 +471,25 @@ public class CstToAst {
 
                         }
 
+                        //right is id
                         if (node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[a-z]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added dubEqualbool right ->");
                         } else {} //ERROR should not happen
 
+                        //right is int
                         if (node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("[0-9]")) {
                             tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added dubEqualbool right ->");
                         } else {} //ERROR should not happen
 
+                        //right is boolean
                         if (node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("true") || node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.matches("false") ) {
                             tempAst.addBranchNode(node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
                             addLog("AST added dubEqualbool right ->");
                         } else {} //ERROR should not happen
 
+                        //right is string
                         if (node.nodeChildren.get(4).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("\"")) {
                             treeNode stringNode = node.nodeChildren.get(4).nodeChildren.get(0);
                             String build = "";
@@ -488,7 +509,7 @@ public class CstToAst {
 
                         addLog(tempAst.current.nodeName);
 
-
+                        //Compares the two sides that were added, to see if the types are the same, if this check fails it will create an error
                         addLog(checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current));
                         addLog(checkType(tempAst.current.nodeChildren.get(1).nodeName, hashTree.current));
                         if ((checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current)).equals(checkType(tempAst.current.nodeChildren.get(1).nodeName,hashTree.current))){
@@ -505,6 +526,7 @@ public class CstToAst {
                     if (node.nodeName.equals("While")) {
                         addLog("AST Checking while");
                         tempAst.addBranchNode(node.nodeName, "branch");
+                        //recursively checks the children of the cst
                         compress(node.nodeChildren.get(1));
                         compress(node.nodeChildren.get(2));
                     }
@@ -513,14 +535,14 @@ public class CstToAst {
                     if (node.nodeName.equals("IF")) {
                         addLog("AST Checking if");
                         tempAst.addBranchNode(node.nodeName, "branch");
+                        //recursively checks the children of the cst
                         compress(node.nodeChildren.get(1));
                         compress(node.nodeChildren.get(2));
                     }
                     break;
                 default:
-
+                    //This is for anything that is not a leaf or a symbol node
                     addLog("DEFAULT " + node.nodeName);
-
                     for (int i = 0; i < node.nodeChildren.size(); i++) {
                         compress(node.nodeChildren.get(i));
                     }
@@ -534,6 +556,7 @@ public class CstToAst {
     }// end compress
 
 
+    //send in a string get its type back
     public String getType(String data){
         if(data.matches("[0-9]")){
             return "int";
@@ -551,10 +574,10 @@ public class CstToAst {
     }
 
 
+    //compares current tempAst node to the Hash table and passes or fails the comparison
     public void checkAssign(treeNode pointer){
         addLog("checkAssign called");
         addLog(tempAst.current.nodeName);
-//        addLog("In scope: " + pointer.nodeName + " looking for: " + tempAst.current.nodeChildren.get(0).nodeName);
         if (pointer.table.containsKey(tempAst.current.nodeChildren.get(0).nodeName)){
 
             String decType = pointer.table.get(tempAst.current.nodeChildren.get(0).nodeName).toString();
@@ -586,16 +609,14 @@ public class CstToAst {
                     unused.put(varInQuestion,"true");
                 } else if (tempAst.current.nodeChildren.get(1).nodeName.equals("Comp ==") || tempAst.current.nodeChildren.get(1).nodeName.equals("Comp !=")){
 
-
-
                 } else {
                     System.out.println("Assignment didn't match BOOLEAN from ID specified" + tempAst.current.nodeChildren.get(1).nodeName);
                     errors += "Assignment didn't match BOOLEAN from ID specified:" + tempAst.current.nodeChildren.get(1).nodeName + "\n";
                 } //error
-
             }
 
         } else {
+            //checks if the from declaired scope of hashtree and up to the root, if not in any then error
             if (pointer.nodeParent == null){
                 System.out.println("Id: " + tempAst.current.nodeChildren.get(0).nodeName +" was never made");
                 errors += "Id: " + tempAst.current.nodeChildren.get(0).nodeName +" was never made"+ "\n";
@@ -607,13 +628,12 @@ public class CstToAst {
 
     }
 
+    //checks id's in a print call
     public void checkPrint(treeNode pointer){
         addLog("checkPrint called");
         addLog("In scope: " + pointer.nodeName + " looking for: " + tempAst.current.nodeChildren.get(0).nodeName);
         if (pointer.table.containsKey(tempAst.current.nodeChildren.get(0).nodeName)){
-
             addLog("Print Check GOOD");
-
         } else {
             if (pointer.nodeParent == null){
                 System.out.println("Id: " + tempAst.current.nodeChildren.get(0).nodeName +" was never made Cannot print");
@@ -626,9 +646,9 @@ public class CstToAst {
 
     }
 
+    //checks if a test case is sme type based on a the hash table
     public String checkType(String testcase, treeNode pointer){
         addLog("In scope: " + pointer.nodeName + " looking for type: " + testcase);
-
 
         if (testcase.matches("[a-z]")){
             if(pointer.table.containsKey(testcase)){

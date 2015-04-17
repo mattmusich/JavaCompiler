@@ -61,6 +61,7 @@ public class MainController {
             String parsedString = parseSend.get(0).toString();
             taOutput.appendText("Parse Status: \n" + parsedString + "\n" );
 
+            //if no errors in parse, then continue
             if (parsedString.equals("")) {
                 taOutput.appendText("Parse Complete, No errors\n\n\n"  );
 
@@ -83,6 +84,7 @@ public class MainController {
                 String astLog = (String) sendConvert.get(3);
                 Hashtable hashChecks = (Hashtable) sendConvert.get(4);
 
+                //checks all of the ids in a duplicate hash table and will see if they were used based on the keys
                 Set<String> keys = hashChecks.keySet();
                 for (String key : keys) {
                     if (hashChecks.get(key) == "") {
@@ -93,6 +95,7 @@ public class MainController {
                     }
                 }
 
+                //checks if there are any CstToAst errors, if not then prints ast and scope table
                 if (astErrors == "") {
                     taOutput.appendText("\nAST\n" + ast.toString() + "\n" + "\n");
                     taOutput.appendText("SCOPE TABLE\n" + (String) sendConvert.get(1) + "\n" + "\n");
@@ -100,7 +103,7 @@ public class MainController {
                     taOutput.appendText("AST ERRORS:\n" + astErrors + "\n");
                 }
 
-
+                //this turns on/off verbose mode, which is the output of the two addLog() in parser and CstToAst
                 if (isVerboseOn) {
                     taOutput.appendText("VERBOSE LOG: " + "\n" + parseLog + "\n" + astLog + "\n");
                 }
@@ -108,16 +111,12 @@ public class MainController {
 
         }
 
-
-
+        //Outputs all tokens made, no errors matter for this
         taTokens.appendText("Lexer Tokens: \n" + lexedString + "\n");
-
 
     }
 
-
-
-
+    //test case for convenience
     @FXML
     private void onCase1ButtonPress(ActionEvent event){
         taInput.appendText("{intaa=1\n" +
@@ -127,7 +126,7 @@ public class MainController {
                 "}}$");
     }
 
-
+    //toggles verbose mode on and off and displays the state in taOutput
     @FXML
     private void onVerboseButtonToggle(ActionEvent event) {
         isVerboseOn = !isVerboseOn;
