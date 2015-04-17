@@ -350,20 +350,43 @@ public class CstToAst {
                         } else { } //ERROR should not happen
 
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("\"")) {
-                            treeNode stringNode = node.nodeChildren.get(2).nodeChildren.get(0);
-                            String build = "";
-                            addLog("ASDF" + stringNode.nodeName);
 
-                            while (stringNode.nodeChildren.size() >= 2){
-                                addLog("string build: " + stringNode.nodeChildren.get(0).nodeName);
-                                build += stringNode.nodeChildren.get(0).nodeName;
-                                stringNode = stringNode.nodeChildren.get(1);
+                            treeNode exprNode = node.nodeChildren.get(2).nodeChildren.get(0);
+
+                            while (exprNode.nodeChildren.size() >= 4) {
+                                treeNode stringNode = exprNode;
+                                String build = "";
+                                addLog("ASDF" + stringNode.nodeName);
+
+                                while (stringNode.nodeChildren.size() >= 2) {
+                                    addLog("string build: " + stringNode.nodeChildren.get(0).nodeName);
+                                    build += stringNode.nodeChildren.get(0).nodeName;
+                                    stringNode = stringNode.nodeChildren.get(1);
+                                }
+
+                                build += "\"";
+                                tempAst.addBranchNode(build, "leaf");
+                                addLog("AST added string assignment right ->");
+                                //checkAssign(hashTree.current);
+                                exprNode = exprNode.nodeChildren.get(3).nodeChildren.get(0);
                             }
 
-                            build += "\"";
-                            tempAst.addBranchNode(build, "leaf");
-                            addLog("AST added string assignment right ->");
-                            //checkPrint(hashTree.current);  TODO MIGHT MAKE A BUG
+                            if (exprNode.nodeChildren.size() == 3) {
+                                treeNode stringNode = exprNode;
+                                String build = "";
+                                addLog("ASDF" + stringNode.nodeName);
+
+                                while (stringNode.nodeChildren.size() >= 2) {
+                                    addLog("string build: " + stringNode.nodeChildren.get(0).nodeName);
+                                    build += stringNode.nodeChildren.get(0).nodeName;
+                                    stringNode = stringNode.nodeChildren.get(1);
+                                }
+
+                                build += "\"";
+                                tempAst.addBranchNode(build, "leaf");
+                                addLog("AST added string assignment right ->");
+                                //checkAssign(hashTree.current);
+                            }
 
                         }
 
