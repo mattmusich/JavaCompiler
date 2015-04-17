@@ -4,7 +4,7 @@
 {boolean a a = ("a" == true )}$
 {boolean a a = (false != 1)}$
 
-
+{print("abc" + "def")}$
 {string a { int a{a =5} a =4 } }$
 {int a { string a{a =5} a =4 } }$
 {int a { {a =5} a =4 }}$
