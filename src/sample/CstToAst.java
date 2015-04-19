@@ -156,7 +156,7 @@ public class CstToAst {
                             addLog("AST added assignment left <-");
                         } else {} //ERROR should not happen
 
-
+                        //ID right branch
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeName.equals("ID")) {
                             if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
                                 //tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
