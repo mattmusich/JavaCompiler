@@ -156,6 +156,32 @@ public class CstToAst {
                             addLog("AST added assignment left <-");
                         } else {} //ERROR should not happen
 
+
+                        if (node.nodeChildren.get(2).nodeChildren.get(0).nodeName.equals("ID")) {
+                            if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {
+                                //tempAst.addBranchNode(node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName, "leaf");
+
+                                String rightId = node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName;
+                                addLog(rightId);
+                                String leftId = node.nodeChildren.get(0).nodeChildren.get(0).nodeName;
+
+                                addLog(checkType(rightId, hashTree.current));
+                                addLog(checkType(leftId, hashTree.current));
+                                if ((checkType(rightId, hashTree.current)).equals(checkType(leftId,hashTree.current))){
+                                    addLog("Id's MATCH");
+                                    tempAst.addBranchNode(leftId,"leaf");
+                                    tempAst.endChildren();
+                                } else {
+                                    System.out.println("NO MATCH");
+                                    errors += "Type: "+checkType(rightId, hashTree.current) + " doesn't match " + checkType(leftId, hashTree.current) + "\n";
+                                }
+
+
+                                addLog("AST added int assignment right ->");
+                            } else {
+                            } //ERROR should not happen
+                        }
+
                         //string right branch
                         if (node.nodeChildren.get(2).nodeChildren.get(0).nodeName.equals("stringExpr")){
                             if (!node.nodeChildren.get(2).nodeChildren.get(0).nodeChildren.get(0).nodeName.equals("$")) {

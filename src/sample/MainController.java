@@ -88,8 +88,8 @@ public class MainController {
                 Set<String> keys = hashChecks.keySet();
                 for (String key : keys) {
                     if (hashChecks.get(key) == "") {
-                        System.out.println("WARN: Declared Variable: " + key + " was unused in program");
-                        taOutput.appendText("WARN: Declared Variable: " + key + " was unused in program\n");
+                        System.out.println("WARN:\n Declared Variable: " + key + " was unassigned in program");
+                        taOutput.appendText("WARN:\n Declared Variable: " + key + " was unassigned in program\n");
                     } else {
                         System.out.println("All Variables are used");
                     }
