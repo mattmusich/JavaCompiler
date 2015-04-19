@@ -173,7 +173,7 @@ public class CstToAst {
                                     tempAst.endChildren();
                                 } else {
                                     System.out.println("NO MATCH");
-                                    errors += "Type: "+checkType(rightId, hashTree.current) + " doesn't match " + checkType(leftId, hashTree.current) + "\n";
+                                    errors += "Id's don't match: Type: "+checkType(rightId, hashTree.current) + " doesn't match " + checkType(leftId, hashTree.current) + "\n";
                                 }
 
 
