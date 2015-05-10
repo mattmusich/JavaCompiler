@@ -99,6 +99,21 @@ public class MainController {
                 if (astErrors == "") {
                     taOutput.appendText("\nAST\n" + ast.toString() + "\n" + "\n");
                     taOutput.appendText("SCOPE TABLE\n" + (String) sendConvert.get(1) + "\n" + "\n");
+
+
+                    /*
+                    TODO REMINDER This is where to start with any new usage for Project 3
+                    //You can utilize the ast from the Tree named ast
+                    //build the 3 tables
+                    //parse the ast
+                    //write the hex for each situation
+                    //backfill the var locations
+                    //print it
+                    */
+
+
+
+
                 } else {
                     taOutput.appendText("AST ERRORS:\n" + astErrors + "\n");
                 }
