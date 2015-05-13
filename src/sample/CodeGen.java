@@ -46,10 +46,19 @@ public class CodeGen {
         addLog(ANSI_GREEN +"\nSTARTING CODE GEN\n" + ANSI_RESET);
         /*Temp Code Gen*/
         hexArray = scan(ast.root);
-
+        hexArray[pos] = "00";
+        pos++;
         /*JUMP CHECK*/
+        for (JumpRow j : jumpTable)
+            addLog(j.dumpText());
+        patchJump(hexArray);
 
         /*BACK PATCH*/
+        addLog(ANSI_GREEN +"\nSTARTING BACK PATCH\n" + ANSI_RESET);
+        for(TempRow t : tempTable)
+            addLog(t.dumpText());
+        backPatch(hexArray);
+
 
         //converts array to the pairs of hex in a string
         StringBuilder builder = new StringBuilder();
@@ -62,8 +71,7 @@ public class CodeGen {
         String hexDump = "";
         hexDump = builder.toString();
 
-        for(TempRow t : tempTable)
-            addLog(t.dumpText());
+
         return hexDump;
     }
 
@@ -76,7 +84,7 @@ public class CodeGen {
 
         //this should allow it to stop
         if (head.nodeChildren == null || head.nodeChildren.size() == 0) {
-            addLog("scan.HitLeaf: " + head.nodeName);
+            addLog(ANSI_PURPLE+"scan.HitLeaf: " + head.nodeName+ANSI_RESET);
 
             return hexTable;
         } else {
@@ -88,6 +96,8 @@ public class CodeGen {
             switch (special) {
                 case BLOCK:
                     scope++;
+                    readBlock(head);
+                    scope--;
                     break;
                 case VARDECL:
                     readVarDecl(head);
@@ -108,17 +118,30 @@ public class CodeGen {
                     readWhile();
                     break;
                 case IF:
+                    //START JUMP
+                    int startJump = pos;
                     readIf(head);
+
+                    /*SUPER IMPORTANT*/
+                    readBlock(head);
+
+                    int jumpEnd = pos - startJump -1;
+                    String jump = getLastJump();
+                    insertLastJump(jump,jumpEnd);
+
+                    break;
+                default:
                     break;
             }
 
-            for (int i = 0; i < head.nodeChildren.size(); i++) {
-                scan(head.nodeChildren.get(i));
-            }
+            /*the block call and loops will call the block scope, so all scope changes happen properly*/
+//            for (int i = 0; i < head.nodeChildren.size(); i++) {
+//                scan(head.nodeChildren.get(i));
+//            }
 
         }
 
-        hexTable[pos] = "00";
+
 
         return hexTable;
     }
@@ -126,6 +149,14 @@ public class CodeGen {
 
     /*@@@@@@@@@@@@@@@ KEY FUNCTIONS @@@@@@@@@@@@@@@*/
     //Each KeyValue to read and process
+
+    public void readBlock(treeNode head){
+        for (int i = 0; i < head.nodeChildren.size(); i++) {
+            scan(head.nodeChildren.get(i));
+        }
+    }
+
+
     public void readVarDecl(treeNode head){
         addLog("readVarDecl.");
         String type = head.nodeChildren.get(0).nodeName;
@@ -134,6 +165,14 @@ public class CodeGen {
         if(type.equals("int")) {
             loadAccConst("00", "int");
             storeAcc(var);
+        }
+        if(type.equals("string")) {
+            addTempRow(var);
+
+
+        }
+        if(type.equals("boolean")) {
+
         }
 
     }
@@ -360,15 +399,13 @@ public class CodeGen {
         addLog("loadYmem: "+ value);
         hexTable[pos] = "AC";
         pos++;
-        if(isInSameTempScope(value)){  //TODO NEED TO FIX SCOPE ISSUE.  Look at notebook
+
+        if(isScopedVar(value)){  //TODO NEED TO FIX SCOPE ISSUE.  Look at notebook
             addLog("storeAcc.VarIsSame: " + value);
-            hexTable[pos] = getTempName(value);
-        } else {
-            hexTable[pos] = "T" + Integer.toString(currentTemp);   //TODO REFER TO NOTES ABOUT IMPOSSIBLE USEAGE HERE
-            addTempRow(value);
-            currentTemp++;
+            hexTable[pos] = getScopedName(value);
+            pos++;
         }
-        pos++;
+
         hexTable[pos] = "XX";
         pos++;
     }
@@ -468,6 +505,7 @@ public class CodeGen {
         return false;
     }
 
+
     public String getTempName(String var){
         for (TempRow t : tempTable){
             if (t.var.equals(var) && t.scope == scope) {
@@ -478,6 +516,83 @@ public class CodeGen {
         return "ZZ";
     }
 
+    // for already declared vars
+    public boolean isScopedVar(String var){
+        int tempScope = scope;
+        addLog("isScopedVar.Var: " + var);
+        while (tempScope >=0) {
+            for (TempRow t : tempTable) {
+                addLog("isScopedVar.Scope:" +tempScope);
+                addLog("isScopedVar.table:" +t.dumpText());
+                if (t.var.equals(var) && t.scope == tempScope) {
+                    return true;
+                }
+            }
+            tempScope = tempScope -1;
+        }
+        return false;
+    }
 
+    //for already declared
+    public String getScopedName(String var){
+        int tempScope = scope;
+        addLog("getScopedName.Var: " + var);
+        while (tempScope >=0) {
+            for (TempRow t : tempTable) {
+                if (t.var.equals(var) && t.scope == tempScope) {
+                    return t.name;
+                }
+            }
+            tempScope = tempScope -1;
+        }
+        return "ZZ";
+    }
+
+    public String getLastJump(){
+        return jumpTable.get(jumpTable.size()-1).name;
+    }
+
+    public void insertLastJump(String jump, int distance){
+        for(JumpRow j : jumpTable){
+            if(j.name.equals(jump)){
+                j.distance = distance;
+            }
+        }
+    }
+
+
+    public String[] patchJump(String[] hextable){
+        for (JumpRow j : jumpTable){
+            String loc = j.name;
+            String val = intToHexString(j.distance);
+            for(int i = 0; i <= 255;i++) {
+                if (hextable[i] == loc){
+                    hextable[i] = val;
+                }
+            }
+        }
+        return hextable;
+    }
+
+    public String[] backPatch(String[] hextable){
+
+        for (TempRow t : tempTable){
+
+            hextable[pos] = "00";
+            String loc = intToHexString(pos);
+            addLog("Location: "+loc);
+            String tempVal = t.name;
+            for(int i = 0; i <= 255;i++) {
+                if (hextable[i] == tempVal){
+                    hextable[i] = loc;
+                    hextable[i+1] = "00";
+                }
+
+            }
+            pos++;
+        }
+
+        return hextable;
+    }
 
 }

@@ -169,7 +169,7 @@ public class CstToAst {
                                 addLog(checkType(leftId, hashTree.current));
                                 if ((checkType(rightId, hashTree.current)).equals(checkType(leftId,hashTree.current))){
                                     addLog("Id's MATCH");
-                                    tempAst.addBranchNode(rightId,"leaf"); //TODO leftId?
+                                    tempAst.addBranchNode(rightId,"leaf"); //TODO
                                     tempAst.endChildren();
                                 } else {
                                     System.out.println("NO MATCH");

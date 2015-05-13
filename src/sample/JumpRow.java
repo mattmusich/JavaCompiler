@@ -16,8 +16,8 @@ public class JumpRow {
         this.distance = distance;
     }
 
-    public void dumpText(){
-        System.out.println("Name: "+name + " Distance:" + distance);
+    public String dumpText(){
+        return "Name: "+name + " Distance:" + distance;
     }
 
 }
