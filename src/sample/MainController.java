@@ -111,7 +111,11 @@ public class MainController {
                     //print it
                     */
 
+                    //Run and print out results of CODEGEN
 
+                    String hex = new CodeGen().generate(ast);
+                    taOutput.appendText("\n\n");
+                    taOutput.appendText(hex);
 
 
                 } else {

@@ -169,7 +169,7 @@ public class CstToAst {
                                 addLog(checkType(leftId, hashTree.current));
                                 if ((checkType(rightId, hashTree.current)).equals(checkType(leftId,hashTree.current))){
                                     addLog("Id's MATCH");
-                                    tempAst.addBranchNode(leftId,"leaf");
+                                    tempAst.addBranchNode(rightId,"leaf"); //TODO leftId?
                                     tempAst.endChildren();
                                 } else {
                                     System.out.println("NO MATCH");
@@ -456,9 +456,9 @@ public class CstToAst {
 
                         //determines the type of comparison
                         if(node.nodeChildren.get(3).nodeName == "dubEqualBool") {
-                            tempAst.addBranchNode("Comp ==", "branch");
+                            tempAst.addBranchNode("CompEQ", "branch");
                         } else{
-                            tempAst.addBranchNode("Comp !=", "branch");
+                            tempAst.addBranchNode("CompNotEQ", "branch");
                         }
 
                         //left is id
