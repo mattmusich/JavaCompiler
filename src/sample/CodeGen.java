@@ -7,11 +7,14 @@ public class CodeGen {
     String logString = ""; //for verbose output, builds from addLog() which will sout and append to this string
     int scope = 0;
     int pos;
+    int backPos = 255;
     String[] hexTable;
     ArrayList<TempRow> tempTable;
     ArrayList<JumpRow> jumpTable;
     int currentTemp = 0;
+    int currentJump = 0;
     int addressCounter = 0;
+
 
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_CYAN = "\u001B[36m";
@@ -41,7 +44,12 @@ public class CodeGen {
         String[] hexArray;
         //call to recursive scan to hexArray output
         addLog(ANSI_GREEN +"\nSTARTING CODE GEN\n" + ANSI_RESET);
+        /*Temp Code Gen*/
         hexArray = scan(ast.root);
+
+        /*JUMP CHECK*/
+
+        /*BACK PATCH*/
 
         //converts array to the pairs of hex in a string
         StringBuilder builder = new StringBuilder();
@@ -88,19 +96,19 @@ public class CodeGen {
                     readAssignment(head);
                     break;
                 case PRINT:
-                    readPrint();
+                    readPrint(head);
                     break;
                 case COMPEQ:
-                    readCompEQ();
+                    //readCompEQ();
                     break;
                 case COMPNOTEQ:
-                    readCompNotEQ();
+                    //readCompNotEQ();
                     break;
                 case WHILE:
                     readWhile();
                     break;
                 case IF:
-                    readIf();
+                    readIf(head);
                     break;
             }
 
@@ -110,10 +118,13 @@ public class CodeGen {
 
         }
 
+        hexTable[pos] = "00";
 
         return hexTable;
     }
 
+
+    /*@@@@@@@@@@@@@@@ KEY FUNCTIONS @@@@@@@@@@@@@@@*/
     //Each KeyValue to read and process
     public void readVarDecl(treeNode head){
         addLog("readVarDecl.");
@@ -159,11 +170,84 @@ public class CodeGen {
 
     }
 
-    public void readPrint(){
+    public void readPrint(treeNode head){
+        String value = head.nodeChildren.get(0).nodeName;
+
+        if(value.equals("true")||value.equals("false")) {
+
+
+        } else if (Character.toString(value.charAt(0)).matches("[a-z]")){
+            loadYmem(value);
+            loadXcon("01","var");
+        }
+
+        //check for int
+        if(Character.toString(value.charAt(0)).matches("[0-9]")){
+            value = intToHexString(Integer.parseInt(value));
+
+        }
+
+        //check for string
+        if(value.charAt(0) == '"'){
+            value = intToHexString(Integer.parseInt(value));
+
+
+        }
 
     }
 
-    public void readIf(){
+    public void readIf(treeNode head){
+        // true ==   false !=
+        if(head.nodeChildren.get(0).nodeName.equals("CompEQ")){
+            treeNode current = head.nodeChildren.get(0);
+            String left = current.nodeChildren.get(0).nodeName;
+            String right = current.nodeChildren.get(1).nodeName;
+
+            if(left.equals("true")||left.equals("false")) {
+
+
+            } else if (Character.toString(left.charAt(0)).matches("[a-z]")){
+                loadXmem(left);
+                compare(right);
+                branchN();
+            }
+
+            //check for int
+            if(Character.toString(left.charAt(0)).matches("[0-9]")){
+
+            }
+
+            //check for string
+            if(left.charAt(0) == '"'){
+
+
+            }
+
+        } else{
+            treeNode current = head.nodeChildren.get(0);
+            String left = current.nodeChildren.get(0).nodeName;
+            String right = current.nodeChildren.get(1).nodeName;
+            if(left.equals("true")||left.equals("false")) {
+
+
+            } else if (Character.toString(left.charAt(0)).matches("[a-z]")){
+                loadYmem(left);
+                loadXcon("01","var");
+            }
+
+            //check for int
+            if(Character.toString(left.charAt(0)).matches("[0-9]")){
+                left = intToHexString(Integer.parseInt(left));
+
+            }
+
+            //check for string
+            if(left.charAt(0) == '"'){
+                left = intToHexString(Integer.parseInt(left));
+
+
+            }
+        }
 
     }
 
@@ -181,7 +265,7 @@ public class CodeGen {
 
 
 
-    //OP CODE functions
+    /*@@@@@@@@@@@@@OP CODE functions@@@@@@@@@@@@@@*/
     //called within each read____()
     public void loadAccConst(String loadVal, String type){
         if(type.equals("int")) {
@@ -239,20 +323,54 @@ public class CodeGen {
 
     }
 
-    public void loadXcon(){
-
+    public void loadXcon(String loadVal, String type){
+        if(type.equals("var")) {
+            addLog("loadAccConst.int");
+            hexTable[pos] = "A2";
+            pos++;
+            hexTable[pos] = loadVal;
+            pos++;
+            hexTable[pos] = "FF";
+            pos++;
+        }
     }
 
-    public void loadXmem(){
-
+    public void loadXmem(String value){
+        addLog("loadXmem: "+ value);
+        hexTable[pos] = "AE";
+        pos++;
+        if(isInSameTempScope(value)){
+            addLog("storeAcc.VarIsSame: " + value);
+            hexTable[pos] = getTempName(value);
+        } else {
+            hexTable[pos] = "T" + Integer.toString(currentTemp);
+            addTempRow(value);
+            currentTemp++;
+        }
+        pos++;
+        hexTable[pos] = "XX";
+        pos++;
     }
 
     public void loadYcon(){
 
     }
 
-    public void loadYmem(){
-
+    public void loadYmem(String value){
+        addLog("loadYmem: "+ value);
+        hexTable[pos] = "AC";
+        pos++;
+        if(isInSameTempScope(value)){  //TODO NEED TO FIX SCOPE ISSUE.  Look at notebook
+            addLog("storeAcc.VarIsSame: " + value);
+            hexTable[pos] = getTempName(value);
+        } else {
+            hexTable[pos] = "T" + Integer.toString(currentTemp);   //TODO REFER TO NOTES ABOUT IMPOSSIBLE USEAGE HERE
+            addTempRow(value);
+            currentTemp++;
+        }
+        pos++;
+        hexTable[pos] = "XX";
+        pos++;
     }
 
     public void noOP(){
@@ -263,12 +381,31 @@ public class CodeGen {
 
     }
 
-    public void compare(){
-
+    public void compare(String value){
+        addLog("compare: "+ value);
+        hexTable[pos] = "EC";
+        pos++;
+        if(isInSameTempScope(value)){
+            addLog("storeAcc.VarIsSame: " + value);
+            hexTable[pos] = getTempName(value);
+        } else {
+            hexTable[pos] = "T" + Integer.toString(currentTemp);
+            addTempRow(value);
+            currentTemp++;
+        }
+        pos++;
+        hexTable[pos] = "XX";
+        pos++;
     }
 
     public void branchN(){
-
+        addLog("branchN: ");
+        hexTable[pos] = "D0";
+        pos++;
+        String val = "J" + currentJump;
+        addJumpRow(val);
+        hexTable[pos] = val;
+        pos++;
     }
 
     public void increment(){
@@ -286,8 +423,10 @@ public class CodeGen {
         addressCounter++;
     }
 
-    public void addJumpRow(){
-
+    public void addJumpRow(String var){
+        addLog("addJumpRow" + var);
+        jumpTable.add(new JumpRow(var,0));
+        currentJump++;
     }
 
     public enum Specials {
@@ -318,7 +457,7 @@ public class CodeGen {
         System.out.println(data);
     }
 
-    public boolean isInSameTempScope(String var){
+    public boolean isInSameTempScope(String var){  //TODO NEED TO FIX SCOPE ISSUE.  Look at notebook
         addLog("isInSameTempScope.Scope: " + scope);
         addLog("isInSameTempScope.Var: " + var);
         for (TempRow t : tempTable){
