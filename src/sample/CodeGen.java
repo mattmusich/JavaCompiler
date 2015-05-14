@@ -111,12 +111,6 @@ public class CodeGen {
                 case PRINT:
                     readPrint(head);
                     break;
-                case COMPEQ:
-                    //readCompEQ();
-                    break;
-                case COMPNOTEQ:
-                    //readCompNotEQ();
-                    break;
                 case WHILE:
                     readWhile();
                     break;
@@ -172,10 +166,10 @@ public class CodeGen {
         if(type.equals("string")) {
             addStringTemp(var);
 
-
         }
         if(type.equals("boolean")) {
-
+            loadAccConst("00","bool");
+            storeAcc(var);
         }
 
     }
@@ -186,24 +180,29 @@ public class CodeGen {
         String value = head.nodeChildren.get(1).nodeName;
         addLog("readAssignment: " + var + ":" +value);
         //check for bool, if not check for var
-        if(value.equals("true")||value.equals("false")) {
-            value = intToHexString(Integer.parseInt(value));
+        if(value.equals("true")||value.equals("false")) { //TODO ass Bool
+            addLog("readAssignment.bool");
+            if(value.equals("true")){
+                value = "01";
+            } else {
+                value = "00";
+            }
             loadAccConst(value, "bool");
             storeAcc(var);
+
         } else if (Character.toString(value.charAt(0)).matches("[a-z]")){
+            addLog("readAssignment.var");
             loadAccMem(value, "var");
             storeAcc(var);
-        }
-
-        //check for int
+        } else  //check for int
         if(Character.toString(value.charAt(0)).matches("[0-9]")){
+            addLog("readAssignment.int");
             value = intToHexString(Integer.parseInt(value));
             loadAccConst(value,"int");
             storeAcc(var);
-        }
-
-        //check for string
+        } else //check for string
         if(value.charAt(0) == '"'){
+            addLog("readAssignment.string");
             String temp = writeString(value);
             addLog("readAssignment.string.temp:"+ temp);
             loadAccConst(temp,"string");
@@ -215,38 +214,46 @@ public class CodeGen {
     }
 
     public void readPrint(treeNode head){
+        addLog("ReadPrint.");
         String value = head.nodeChildren.get(0).nodeName;
 
         if(value.equals("true")||value.equals("false")) {
 
 
         } else if (Character.toString(value.charAt(0)).matches("[a-z]")){
+            addLog("ReadPrint.var");
             loadYmem(value);
 
-            //TODO get type of value
             String type = getScopedType(value);
             //int/bool
             if(type.equals("int")) {
                 loadXcon("01", "var");
+                syscall();
             }
             //string
             if(type.equals("string")) {
                 loadXcon("02", "var");
+                syscall();
             }
 
         }
 
         //check for int
         if(Character.toString(value.charAt(0)).matches("[0-9]")){
+            addLog("ReadPrint.Int");
             value = intToHexString(Integer.parseInt(value));
-
+            loadYcon(value);
+            loadXcon("01", "var");
+            syscall();
         }
 
         //check for string
         if(value.charAt(0) == '"'){
-            value = intToHexString(Integer.parseInt(value));
-
-
+             //TODO printing strings
+            String location = writeString(value);
+            loadYmemString(location);
+            loadXcon("02","var");
+            syscall();
         }
 
     }
@@ -258,25 +265,57 @@ public class CodeGen {
             String left = current.nodeChildren.get(0).nodeName;
             String right = current.nodeChildren.get(1).nodeName;
 
-            if(left.equals("true")||left.equals("false")) {
+            if((left.equals("true")||left.equals("false")) && (right.equals("true")||right.equals("false")) ) {
 
 
-            } else if (Character.toString(left.charAt(0)).matches("[a-z]")){
+            } else if (Character.toString(left.charAt(0)).matches("[a-z]") && Character.toString(right.charAt(0)).matches("[a-z]")){
                 loadXmem(left);
                 compare(right);
                 branchN();
             }
 
             //check for int
-            if(Character.toString(left.charAt(0)).matches("[0-9]")){
+            if(Character.toString(left.charAt(0)).matches("[0-9]") && Character.toString(right.charAt(0)).matches("[0-9]")){
 
             }
 
             //check for string
-            if(left.charAt(0) == '"'){
+            if(left.charAt(0) == '"' && right.charAt(0) == '"'){
 
 
             }
+
+            //var bool
+            if(Character.toString(left.charAt(0)).matches("[a-z]")  && (right.equals("true")||right.equals("false"))){
+
+            }
+
+            //var int
+            if(Character.toString(left.charAt(0)).matches("[a-z]")  && Character.toString(right.charAt(0)).matches("[0-9]")){
+
+            }
+
+            //var string
+            if(Character.toString(left.charAt(0)).matches("[a-z]")  && right.charAt(0) == '"'){
+
+            }
+
+            //bool var
+            if((right.equals("true")||right.equals("false")) && Character.toString(left.charAt(0)).matches("[a-z]")   ){
+
+            }
+
+            //int var
+            if(Character.toString(right.charAt(0)).matches("[0-9]") && Character.toString(left.charAt(0)).matches("[a-z]")   ){
+
+            }
+
+            //string var
+            if( right.charAt(0) == '"' && Character.toString(left.charAt(0)).matches("[a-z]")){
+
+            }
+
+
 
         } else{
             treeNode current = head.nodeChildren.get(0);
@@ -287,7 +326,8 @@ public class CodeGen {
 
             } else if (Character.toString(left.charAt(0)).matches("[a-z]")){
                 loadYmem(left);
-                loadXcon("01","var");
+                loadXcon("01", "var");
+                syscall();
             }
 
             //check for int
@@ -310,13 +350,6 @@ public class CodeGen {
 
     }
 
-    public void readCompEQ(){
-
-    }
-
-    public void readCompNotEQ(){
-
-    }
 
 
 
@@ -337,7 +370,13 @@ public class CodeGen {
             hexTable[pos] = loadVal;
             pos++;
         }
-
+        if(type.equals("bool")) {
+            addLog("loadAccConst.boolean");
+            hexTable[pos] = "A9";
+            pos++;
+            hexTable[pos] = loadVal;
+            pos++;
+        }
 
     }
 
@@ -391,8 +430,7 @@ public class CodeGen {
             pos++;
             hexTable[pos] = loadVal;
             pos++;
-            hexTable[pos] = "FF";
-            pos++;
+
         }
         if(type.equals("varString")) {
 
@@ -416,8 +454,12 @@ public class CodeGen {
         pos++;
     }
 
-    public void loadYcon(){
-
+    public void loadYcon(String value){
+        addLog("loadYcon: "+ value);
+        hexTable[pos] = "A0";
+        pos++;
+        hexTable[pos] = value;
+        pos++;
     }
 
     public void loadYmem(String value){
@@ -434,6 +476,17 @@ public class CodeGen {
         hexTable[pos] = "XX";
         pos++;
     }
+
+    public void loadYmemString(String value){
+        addLog("loadYmemString: "+ value);
+        hexTable[pos] = "AC";
+        pos++;
+        hexTable[pos] = value;
+        pos++;
+        hexTable[pos] = "00";
+        pos++;
+    }
+
 
     public void noOP(){
 
@@ -475,7 +528,8 @@ public class CodeGen {
     }
 
     public void syscall(){
-
+        hexTable[pos] = "FF";
+        pos++;
     }
 
 
