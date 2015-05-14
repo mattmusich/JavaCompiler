@@ -204,10 +204,31 @@ public class CodeGen {
             storeAcc(var);
         } else  //check for int
         if(Character.toString(value.charAt(0)).matches("[0-9]")){
-            addLog("readAssignment.int");
-            value = intToHexString(Integer.parseInt(value));
-            loadAccConst(value,"int");
-            storeAcc(var);
+            if(head.nodeChildren.get(1).nodeChildren.isEmpty()){
+                    addLog("readAssignment.int");
+                    value = intToHexString(Integer.parseInt(value));
+                    loadAccConst(value, "int");
+                    storeAcc(var);
+            } else {
+                if (head.nodeChildren.get(1).nodeChildren.get(0).nodeName.matches("[0-9]")) {
+                    String value2 = head.nodeChildren.get(1).nodeChildren.get(0).nodeName;
+                    String l = createNewMemValInt(value);
+                    String r = createNewMemValInt(value2);
+                    loadAccConst(value, "int");
+                    storeAcc(var);
+                    loadAccConst(value2, "int");
+                    addWithCarry(l); 
+                    storeAcc(var);
+
+                } else if (head.nodeChildren.get(1).nodeChildren.get(0).nodeName.matches("[a-z]")) {
+                    String value2 = head.nodeChildren.get(1).nodeChildren.get(0).nodeName;
+                    loadAccConst(value, "int");
+                    addWithCarry(value2);
+                    storeAcc(var);
+                }
+            }
+
+
         } else //check for string
         if(value.charAt(0) == '"'){
             addLog("readAssignment.string");
@@ -479,7 +500,20 @@ public class CodeGen {
         pos++;
     }
 
-    public void addWithCarry(){
+    public void addWithCarry(String name){
+        hexTable[pos] = "6D";
+        pos++;
+        if(isInSameTempScope(name)){
+            addLog("storeAcc.VarIsSame: " + name);
+            hexTable[pos] = getTempName(name);
+        } else {
+            hexTable[pos] = "T" + Integer.toString(currentTemp);
+            addTempRow(name);
+            currentTemp++;
+        }
+        pos++;
+        hexTable[pos] = "XX";
+        pos++;
 
     }
 
