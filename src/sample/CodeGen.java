@@ -29,7 +29,7 @@ public class CodeGen {
 
     //"Main for process"
     //send in a Tree(AST)
-    public String generate(tree ast){
+    public ArrayList<Object> generate(tree ast){
 
         String hexDump = "";
         hexTable = new String[256];
@@ -41,8 +41,12 @@ public class CodeGen {
         tree targetTree = ast;
         hexDump = preScan(targetTree);
 
-        addLog(hexDump);
-        return hexDump;
+        //addLog(hexDump);
+        ArrayList<Object> send = new ArrayList<Object>();
+        send.add(hexDump);
+        send.add(logString);
+
+        return send;
     }
 
     public String preScan(tree ast){
@@ -257,7 +261,6 @@ public class CodeGen {
             syscall();
         } else //check for string
         if(value.charAt(0) == '"'){
-             //TODO printing strings
             String var = createNewMemValString(value);
             String location = getScopedName(var);
             loadYmemString(location);
@@ -312,6 +315,7 @@ public class CodeGen {
                 addLog("ReadIf.string string");
                 String l = createNewMemValString(left);
                 String r = createNewMemValString(right);
+                addLog("ReadIf.string string.l: "+ l);
                 loadXmem(l);
                 compare(r);
                 branchN();

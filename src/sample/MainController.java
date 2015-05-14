@@ -23,6 +23,7 @@ public class MainController {
     private void onLexButtonPress(ActionEvent event) {
         // Button was clicked, do something...
 
+        String codeGenLog="";
         taOutput.clear();
         taTokens.clear();
 
@@ -114,9 +115,13 @@ public class MainController {
 
                     //Run and print out results of CODEGEN
 
-                    String hex = new CodeGen().generate(ast);
-                    taOutput.appendText("\n\n");
+                    ArrayList<Object> sent = new CodeGen().generate(ast);
+
+                    String hex = (String) sent.get(0);
+                    codeGenLog = (String) sent.get(1);
+                    taOutput.appendText("\nHEX OUTPUT\n");
                     taOutput.appendText(hex);
+                    taOutput.appendText("\n\n");
 
 
                 } else {
@@ -125,7 +130,7 @@ public class MainController {
 
                 //this turns on/off verbose mode, which is the output of the two addLog() in parser and CstToAst
                 if (isVerboseOn) {
-                    taOutput.appendText("VERBOSE LOG: " + "\n" + parseLog + "\n" + astLog + "\n");
+                    taOutput.appendText("VERBOSE LOG: " + "\n" + parseLog + "\n" + astLog + "\n" + codeGenLog + "\n");
                 }
             }
 
