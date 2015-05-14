@@ -218,7 +218,15 @@ public class CodeGen {
         String value = head.nodeChildren.get(0).nodeName;
 
         if(value.equals("true")||value.equals("false")) {
-
+            addLog("ReadPrint.bool");
+            if(value.equals("true")){
+                value = "01";
+            } else {
+                value = "00";
+            }
+            loadYcon(value);
+            loadXcon("01", "var");
+            syscall();
 
         } else if (Character.toString(value.charAt(0)).matches("[a-z]")){
             addLog("ReadPrint.var");
@@ -226,7 +234,7 @@ public class CodeGen {
 
             String type = getScopedType(value);
             //int/bool
-            if(type.equals("int")) {
+            if(type.equals("int") || type.equals("bool")) {
                 loadXcon("01", "var");
                 syscall();
             }
@@ -236,18 +244,14 @@ public class CodeGen {
                 syscall();
             }
 
-        }
-
-        //check for int
+        } else //check for int
         if(Character.toString(value.charAt(0)).matches("[0-9]")){
             addLog("ReadPrint.Int");
             value = intToHexString(Integer.parseInt(value));
             loadYcon(value);
             loadXcon("01", "var");
             syscall();
-        }
-
-        //check for string
+        } else //check for string
         if(value.charAt(0) == '"'){
              //TODO printing strings
             String location = writeString(value);
