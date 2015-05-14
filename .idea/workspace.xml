@@ -130,12 +130,12 @@
       <file leaf-file-name="CodeGen.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/sample/CodeGen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.41931942" vertical-offset="722" max-vertical-offset="16167">
-              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.52469814" vertical-offset="3109" max-vertical-offset="16218">
+              <caret line="211" column="20" selection-start-line="211" selection-start-column="20" selection-end-line="211" selection-end-column="20" />
               <folding>
                 <element signature="e#1351#1359#0" expanded="true" />
-                <element signature="e#25962#25963#0" expanded="true" />
-                <element signature="e#26023#26024#0" expanded="true" />
+                <element signature="e#26137#26138#0" expanded="true" />
+                <element signature="e#26198#26199#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1062,12 +1062,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/sample/CodeGen.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.41931942" vertical-offset="722" max-vertical-offset="16167">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.52469814" vertical-offset="3109" max-vertical-offset="16218">
+          <caret line="211" column="20" selection-start-line="211" selection-start-column="20" selection-end-line="211" selection-end-column="20" />
           <folding>
             <element signature="e#1351#1359#0" expanded="true" />
-            <element signature="e#25962#25963#0" expanded="true" />
-            <element signature="e#26023#26024#0" expanded="true" />
+            <element signature="e#26137#26138#0" expanded="true" />
+            <element signature="e#26198#26199#0" expanded="true" />
           </folding>
         </state>
       </provider>

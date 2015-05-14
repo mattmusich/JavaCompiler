@@ -211,6 +211,7 @@ public class CodeGen {
                     storeAcc(var);
             } else {
                 if (head.nodeChildren.get(1).nodeChildren.get(0).nodeName.matches("[0-9]")) {
+                    addLog("readAssignment.int+ int");
                     String value2 = head.nodeChildren.get(1).nodeChildren.get(0).nodeName;
                     String l = createNewMemValInt(value);
                     String r = createNewMemValInt(value2);
@@ -221,8 +222,10 @@ public class CodeGen {
                     storeAcc(var);
 
                 } else if (head.nodeChildren.get(1).nodeChildren.get(0).nodeName.matches("[a-z]")) {
+                    addLog("readAssignment.int+ var");
                     String value2 = head.nodeChildren.get(1).nodeChildren.get(0).nodeName;
-                    loadAccConst(value, "int");
+                    int i = Integer.parseInt(value);
+                    loadAccConst(intToHexString(i), "int");
                     addWithCarry(value2);
                     storeAcc(var);
                 }
