@@ -14,7 +14,7 @@ public class CodeGen {
     int currentTemp = 0;
     int currentJump = 0;
     int addressCounter = 0;
-    treeNode hashtable;
+
 
 
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -25,8 +25,8 @@ public class CodeGen {
 
     //"Main for process"
     //send in a Tree(AST)
-    public String generate(tree ast, tree hashTable){
-        this.hashtable = hashTable.root;
+    public String generate(tree ast){
+
         String hexDump = "";
         hexTable = new String[256];
         scope = 0;
@@ -222,7 +222,18 @@ public class CodeGen {
 
         } else if (Character.toString(value.charAt(0)).matches("[a-z]")){
             loadYmem(value);
-            loadXcon("01","var");
+
+            //TODO get type of value
+            String type = getScopedType(value);
+            //int/bool
+            if(type.equals("int")) {
+                loadXcon("01", "var");
+            }
+            //string
+            if(type.equals("string")) {
+                loadXcon("02", "var");
+            }
+
         }
 
         //check for int
@@ -470,7 +481,7 @@ public class CodeGen {
 
     public void addTempRow(String var){
         addLog("addTempRow: " + var);
-        tempTable.add(new TempRow(hexTable[pos],scope,var,addressCounter));
+        tempTable.add(new TempRow(hexTable[pos],scope,var,addressCounter,"int"));
         addressCounter++;
     }
 
@@ -481,7 +492,7 @@ public class CodeGen {
         } else {
             hexTable[pos] = "T" + Integer.toString(currentTemp);
             currentTemp++;
-            tempTable.add(new TempRow(hexTable[pos],scope,var,addressCounter));
+            tempTable.add(new TempRow(hexTable[pos],scope,var,addressCounter,"string"));
             addressCounter++;
         }
 
@@ -542,7 +553,7 @@ public class CodeGen {
             backPos--;
         }
 
-        return intToHexString(backPos);
+        return intToHexString(backPos+1);
     }
 
 
@@ -599,6 +610,20 @@ public class CodeGen {
             tempScope = tempScope -1;
         }
         return "ZZ";
+    }
+
+    public String getScopedType(String var){
+        int tempScope = scope;
+        addLog("getScopedName.Var: " + var);
+        while (tempScope >=0) {
+            for (TempRow t : tempTable) {
+                if (t.var.equals(var) && t.scope == tempScope) {
+                    return t.type;
+                }
+            }
+            tempScope = tempScope -1;
+        }
+        return "NaT";
     }
 
     public String getLastJump(){

@@ -31,6 +31,7 @@ public class CstToAst {
         send.add(errors);
         send.add(logString);
         send.add(unused);
+        send.add(hashTree);
         return send;
     }
 

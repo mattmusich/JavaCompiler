@@ -83,6 +83,7 @@ public class MainController {
                 String astErrors = (String) sendConvert.get(2);
                 String astLog = (String) sendConvert.get(3);
                 Hashtable hashChecks = (Hashtable) sendConvert.get(4);
+                //tree scopeTable = (tree) sendConvert.get(5);
 
                 //checks all of the ids in a duplicate hash table and will see if they were used based on the keys
                 Set<String> keys = hashChecks.keySet();
