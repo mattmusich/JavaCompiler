@@ -145,11 +145,13 @@ public class MainController {
     @FXML
     private void onCase1ButtonPress(ActionEvent event){
         taInput.appendText("{intaa=1\n" +
-                "print(a)stringb  b = \"hey alan\"\n" +
-                "if(b == \"hey alan\"){\n" +
+                "print(a)\na = 5 + a\n print(a)\nstringb  b = \"hey alan\"\n" +
+                "if(a == 6){\n" +
                 "print(b)\n" +
                 "}}$");
     }
+  
+
 
     //toggles verbose mode on and off and displays the state in taOutput
     @FXML
