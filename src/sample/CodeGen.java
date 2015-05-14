@@ -14,6 +14,7 @@ public class CodeGen {
     int currentTemp = 0;
     int currentJump = 0;
     int addressCounter = 0;
+    treeNode hashtable;
 
 
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -24,7 +25,8 @@ public class CodeGen {
 
     //"Main for process"
     //send in a Tree(AST)
-    public String generate(tree ast){
+    public String generate(tree ast, tree hashTable){
+        this.hashtable = hashTable.root;
         String hexDump = "";
         hexTable = new String[256];
         scope = 0;
@@ -60,6 +62,7 @@ public class CodeGen {
         backPatch(hexArray);
 
 
+
         //converts array to the pairs of hex in a string
         StringBuilder builder = new StringBuilder();
         for (String string : hexArray) {
@@ -70,7 +73,7 @@ public class CodeGen {
         }
         String hexDump = "";
         hexDump = builder.toString();
-
+        hexDump = hexDump.replaceAll("null","00");
 
         return hexDump;
     }
@@ -167,7 +170,7 @@ public class CodeGen {
             storeAcc(var);
         }
         if(type.equals("string")) {
-            addTempRow(var);
+            addStringTemp(var);
 
 
         }
@@ -201,9 +204,11 @@ public class CodeGen {
 
         //check for string
         if(value.charAt(0) == '"'){
-            value = intToHexString(Integer.parseInt(value));
-            loadAccConst(value,"string");
+            String temp = writeString(value);
+            addLog("readAssignment.string.temp:"+ temp);
+            loadAccConst(temp,"string");
             storeAcc(var);
+
         }
 
 
@@ -314,7 +319,13 @@ public class CodeGen {
             hexTable[pos] = loadVal;
             pos++;
         }
-
+        if(type.equals("string")){
+            addLog("loadAccConst.string");
+            hexTable[pos] = "A9";
+            pos++;
+            hexTable[pos] = loadVal;
+            pos++;
+        }
 
 
     }
@@ -363,7 +374,7 @@ public class CodeGen {
     }
 
     public void loadXcon(String loadVal, String type){
-        if(type.equals("var")) {
+        if(type.equals("var")) { //varInt
             addLog("loadAccConst.int");
             hexTable[pos] = "A2";
             pos++;
@@ -371,6 +382,9 @@ public class CodeGen {
             pos++;
             hexTable[pos] = "FF";
             pos++;
+        }
+        if(type.equals("varString")) {
+
         }
     }
 
@@ -400,7 +414,7 @@ public class CodeGen {
         hexTable[pos] = "AC";
         pos++;
 
-        if(isScopedVar(value)){  //TODO NEED TO FIX SCOPE ISSUE.  Look at notebook
+        if(isScopedVar(value)){
             addLog("storeAcc.VarIsSame: " + value);
             hexTable[pos] = getScopedName(value);
             pos++;
@@ -460,6 +474,19 @@ public class CodeGen {
         addressCounter++;
     }
 
+    public void addStringTemp(String var){
+        if(isInSameTempScope(var)){
+            addLog("addStringTemp.VarIsSame: " + var);
+            hexTable[pos] = getTempName(var);
+        } else {
+            hexTable[pos] = "T" + Integer.toString(currentTemp);
+            currentTemp++;
+            tempTable.add(new TempRow(hexTable[pos],scope,var,addressCounter));
+            addressCounter++;
+        }
+
+    }
+
     public void addJumpRow(String var){
         addLog("addJumpRow" + var);
         jumpTable.add(new JumpRow(var,0));
@@ -478,7 +505,7 @@ public class CodeGen {
     }
 
 
-    //small helper stuff
+    /*helper functions*/
     public String intToHexString(int n) {
         StringBuilder sb = new StringBuilder();
         sb.append(Integer.toHexString(n));
@@ -494,7 +521,33 @@ public class CodeGen {
         System.out.println(data);
     }
 
-    public boolean isInSameTempScope(String var){  //TODO NEED TO FIX SCOPE ISSUE.  Look at notebook
+    public String writeString(String s){
+        addLog("writeString:"+s);
+        s = s.replaceAll("\"", "");
+        String[] hexes = new String[s.length()];
+        char[] sA = s.toCharArray();
+
+        for(int i = 0; i < sA.length;i++){
+            hexes[i] = String.format("%02x", (int) sA[i]);
+        }
+
+        for(String st : hexes)
+            addLog("hexes:"+st);
+
+        hexTable[backPos] = "00";
+        backPos--;
+        for(int i = hexes.length-1; i >= 0 ;i--){
+            hexTable[backPos] = hexes[i];
+            addLog("hexTable:"+hexTable[backPos]);
+            backPos--;
+        }
+
+        return intToHexString(backPos);
+    }
+
+
+
+    public boolean isInSameTempScope(String var){
         addLog("isInSameTempScope.Scope: " + scope);
         addLog("isInSameTempScope.Var: " + var);
         for (TempRow t : tempTable){
