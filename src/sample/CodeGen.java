@@ -14,6 +14,10 @@ public class CodeGen {
     int currentTemp = 0;
     int currentJump = 0;
     int addressCounter = 0;
+    String[] alpha = { "a", "b", "c", "d", "e", "f", "g",
+            "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+            "u", "v", "w", "x", "y", "z" };
+    int alphaNum = 25;
 
 
 
@@ -180,7 +184,7 @@ public class CodeGen {
         String value = head.nodeChildren.get(1).nodeName;
         addLog("readAssignment: " + var + ":" +value);
         //check for bool, if not check for var
-        if(value.equals("true")||value.equals("false")) { //TODO ass Bool
+        if(value.equals("true")||value.equals("false")) {
             addLog("readAssignment.bool");
             if(value.equals("true")){
                 value = "01";
@@ -254,7 +258,8 @@ public class CodeGen {
         } else //check for string
         if(value.charAt(0) == '"'){
              //TODO printing strings
-            String location = writeString(value);
+            String var = createNewMemValString(value);
+            String location = getScopedName(var);
             loadYmemString(location);
             loadXcon("02","var");
             syscall();
@@ -268,54 +273,101 @@ public class CodeGen {
             treeNode current = head.nodeChildren.get(0);
             String left = current.nodeChildren.get(0).nodeName;
             String right = current.nodeChildren.get(1).nodeName;
+            addLog("readIf.left:" +left);
+            addLog("readIf.right:" +right);
 
+            //done
             if((left.equals("true")||left.equals("false")) && (right.equals("true")||right.equals("false")) ) {
+                addLog("ReadIf.Bool Bool");
+                String l = createNewMemValBool(left);
+                String r = createNewMemValBool(right);
+                loadXmem(l);
+                compare(r);
+                branchN();
 
+            }
 
-            } else if (Character.toString(left.charAt(0)).matches("[a-z]") && Character.toString(right.charAt(0)).matches("[a-z]")){
+            //done
+            if (left.matches("[a-z]") && right.matches("[a-z]")){
+                addLog("ReadIf.var var");
                 loadXmem(left);
                 compare(right);
                 branchN();
             }
 
+            //done
             //check for int
             if(Character.toString(left.charAt(0)).matches("[0-9]") && Character.toString(right.charAt(0)).matches("[0-9]")){
-
+                addLog("ReadIf.int int");
+                String l = createNewMemValInt(left);
+                String r = createNewMemValInt(right);
+                loadXmem(l);
+                compare(r);
+                branchN();
             }
 
+            //TODO
             //check for string
             if(left.charAt(0) == '"' && right.charAt(0) == '"'){
-
+                addLog("ReadIf.string string");
+                String l = createNewMemValString(left);
+                String r = createNewMemValString(right);
+                loadXmem(l);
+                compare(r);
+                branchN();
 
             }
 
+            //done
             //var bool
-            if(Character.toString(left.charAt(0)).matches("[a-z]")  && (right.equals("true")||right.equals("false"))){
-
+            if(left.matches("[a-z]")  && (right.equals("true")||right.equals("false"))){
+                addLog("ReadIf.var Bool");
+                loadXmem(left);
+                String r = createNewMemValBool(right);
+                compare(r);
+                branchN();
             }
 
+            //done
             //var int
-            if(Character.toString(left.charAt(0)).matches("[a-z]")  && Character.toString(right.charAt(0)).matches("[0-9]")){
-
+            if(left.matches("[a-z]")  && Character.toString(right.charAt(0)).matches("[0-9]")){
+                addLog("ReadIf.var int");
+                loadXmem(left);
+                String r = createNewMemValInt(right);
+                compare(r);
+                branchN();
             }
 
+            //TODO
             //var string
-            if(Character.toString(left.charAt(0)).matches("[a-z]")  && right.charAt(0) == '"'){
+            if(left.matches("[a-z]")  && right.charAt(0) == '"'){
+                addLog("ReadIf.var string");
 
             }
 
+            //done
             //bool var
-            if((right.equals("true")||right.equals("false")) && Character.toString(left.charAt(0)).matches("[a-z]")   ){
-
+            if((left.equals("true")||left.equals("false")) && right.matches("[a-z]")){
+                addLog("ReadIf.Bool var");
+                loadXmem(right);
+                String l = createNewMemValBool(left);
+                compare(l);
+                branchN();
             }
 
             //int var
-            if(Character.toString(right.charAt(0)).matches("[0-9]") && Character.toString(left.charAt(0)).matches("[a-z]")   ){
-
+            if(Character.toString(left.charAt(0)).matches("[0-9]") && right.matches("[a-z]")   ){
+                addLog("ReadIf.int var");
+                loadXmem(right);
+                String l = createNewMemValInt(left);
+                compare(l);
+                branchN();
             }
 
+            //TODO
             //string var
-            if( right.charAt(0) == '"' && Character.toString(left.charAt(0)).matches("[a-z]")){
+            if( left.charAt(0) == '"' && right.matches("[a-z]")){
+                addLog("ReadIf.string var");
 
             }
 
@@ -386,7 +438,7 @@ public class CodeGen {
 
     public void loadAccMem(String loadVal,String type){
         if(type.equals("var")) {
-            addLog("loadAccConst.var");
+            addLog("loadAccMem.var");
             hexTable[pos] = "AD";
             pos++;
 
@@ -406,7 +458,7 @@ public class CodeGen {
     }
 
     public void storeAcc(String var){
-        addLog("storeAcc.");
+        addLog("storeAcc:" + var);
         hexTable[pos] = "8D";
         pos++;
 
@@ -614,6 +666,46 @@ public class CodeGen {
         return intToHexString(backPos+1);
     }
 
+    //USE FOR IFS when not a Var
+    public String createNewMemValInt(String value){
+        addLog("createNewMemValInt: "+ value);
+        loadAccConst("00","int");
+        String var = alpha[alphaNum];
+        storeAcc(var);
+        alphaNum--;
+        int i = Integer.parseInt(value);
+        value = intToHexString(i);
+        loadAccConst(value, "int");
+        storeAcc(var);
+        return var;
+    }
+
+    public String createNewMemValBool(String value){
+        addLog("createNewMemValBool: "+ value);
+        loadAccConst("00","bool");
+        String var = alpha[alphaNum];
+        storeAcc(var);
+        alphaNum--;
+        if(value.equals("true")){
+            value = "01";
+        } else {
+            value = "00";
+        }
+        loadAccConst(value, "int");
+        storeAcc(var);
+        return var;
+    }
+
+    public String createNewMemValString(String value){
+        addLog("createNewMemValString: "+ value);
+        String var = alpha[alphaNum];
+        addStringTemp(var);
+        alphaNum--;
+        String temp = writeString(value);
+        loadAccConst(temp,"string");
+        storeAcc(var);
+        return var;
+    }
 
 
     public boolean isInSameTempScope(String var){
