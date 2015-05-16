@@ -145,9 +145,6 @@ public class CodeGen {
 //            }
 
         }
-
-
-
         return hexTable;
     }
 
@@ -285,6 +282,7 @@ public class CodeGen {
             syscall();
         } else //check for string
         if(value.charAt(0) == '"'){
+            addLog("ReadPrint.string");
             String var = createNewMemValString(value);
             String location = getScopedName(var);
             loadYmemString(location);
@@ -300,12 +298,12 @@ public class CodeGen {
             treeNode current = head.nodeChildren.get(0);
             String left = current.nodeChildren.get(0).nodeName;
             String right = current.nodeChildren.get(1).nodeName;
-            addLog("readIf.left:" +left);
-            addLog("readIf.right:" +right);
+            addLog("read==If.left:" +left);
+            addLog("read==If.right:" +right);
 
             //done
             if((left.equals("true")||left.equals("false")) && (right.equals("true")||right.equals("false")) ) {
-                addLog("ReadIf.Bool Bool");
+                addLog("Read==If.Bool Bool");
                 String l = createNewMemValBool(left);
                 String r = createNewMemValBool(right);
                 loadXmem(l);
@@ -316,7 +314,7 @@ public class CodeGen {
 
             //done
             if (left.matches("[a-z]") && right.matches("[a-z]")){
-                addLog("ReadIf.var var");
+                addLog("Read==If.var var");
                 loadXmem(left);
                 compare(right);
                 branchN();
@@ -325,7 +323,7 @@ public class CodeGen {
             //done
             //check for int
             if(Character.toString(left.charAt(0)).matches("[0-9]") && Character.toString(right.charAt(0)).matches("[0-9]")){
-                addLog("ReadIf.int int");
+                addLog("Read==If.int int");
                 String l = createNewMemValInt(left);
                 String r = createNewMemValInt(right);
                 loadXmem(l);
@@ -336,7 +334,7 @@ public class CodeGen {
             //TODO
             //check for string
             if(left.charAt(0) == '"' && right.charAt(0) == '"'){
-                addLog("ReadIf.string string");
+                addLog("Read==If.string string");
                 String l = createNewMemValString(left);
                 String r = createNewMemValString(right);
                 addLog("ReadIf.string string.l: "+ l);
@@ -349,7 +347,7 @@ public class CodeGen {
             //done
             //var bool
             if(left.matches("[a-z]")  && (right.equals("true")||right.equals("false"))){
-                addLog("ReadIf.var Bool");
+                addLog("Read==If.var Bool");
                 loadXmem(left);
                 String r = createNewMemValBool(right);
                 compare(r);
@@ -359,7 +357,7 @@ public class CodeGen {
             //done
             //var int
             if(left.matches("[a-z]")  && Character.toString(right.charAt(0)).matches("[0-9]")){
-                addLog("ReadIf.var int");
+                addLog("Read==If.var int");
                 loadXmem(left);
                 String r = createNewMemValInt(right);
                 compare(r);
@@ -369,14 +367,14 @@ public class CodeGen {
             //TODO
             //var string
             if(left.matches("[a-z]")  && right.charAt(0) == '"'){
-                addLog("ReadIf.var string");
+                addLog("Read==If.var string");
 
             }
 
             //done
             //bool var
             if((left.equals("true")||left.equals("false")) && right.matches("[a-z]")){
-                addLog("ReadIf.Bool var");
+                addLog("Read==If.Bool var");
                 loadXmem(right);
                 String l = createNewMemValBool(left);
                 compare(l);
@@ -385,7 +383,7 @@ public class CodeGen {
 
             //int var
             if(Character.toString(left.charAt(0)).matches("[0-9]") && right.matches("[a-z]")   ){
-                addLog("ReadIf.int var");
+                addLog("Read==If.int var");
                 loadXmem(right);
                 String l = createNewMemValInt(left);
                 compare(l);
@@ -402,106 +400,112 @@ public class CodeGen {
 
 
         } else{
-            // !=
+            /*@@@@@ != @@@@@*/
             treeNode current = head.nodeChildren.get(0);
             String left = current.nodeChildren.get(0).nodeName;
             String right = current.nodeChildren.get(1).nodeName;
-            addLog("readIf.left:" +left);
-            addLog("readIf.right:" +right);
+            addLog("read!=If.left:" +left);
+            addLog("read!=If.right:" +right);
 
             //done
             if((left.equals("true")||left.equals("false")) && (right.equals("true")||right.equals("false")) ) {
-                addLog("ReadIf.Bool Bool");
+                addLog("Read!=If.Bool Bool");
                 String l = createNewMemValBool(left);
                 String r = createNewMemValBool(right);
                 loadXmem(l);
                 compare(r);
+                flipZ();
                 branchN();
-
             }
 
             //done
             if (left.matches("[a-z]") && right.matches("[a-z]")){
-                addLog("ReadIf.var var");
+                addLog("Read!=If.var var");
                 loadXmem(left);
                 compare(right);
+                flipZ();
                 branchN();
             }
 
             //done
             //check for int
             if(Character.toString(left.charAt(0)).matches("[0-9]") && Character.toString(right.charAt(0)).matches("[0-9]")){
-                addLog("ReadIf.int int");
+                addLog("Read!=If.int int");
                 String l = createNewMemValInt(left);
                 String r = createNewMemValInt(right);
                 loadXmem(l);
                 compare(r);
+                flipZ();
                 branchN();
             }
 
             //TODO
             //check for string
             if(left.charAt(0) == '"' && right.charAt(0) == '"'){
-                addLog("ReadIf.string string");
+                addLog("Read!=If.string string");
                 String l = createNewMemValString(left);
                 String r = createNewMemValString(right);
-                addLog("ReadIf.string string.l: "+ l);
+                addLog("Read!=If.string string.l: "+ l);
                 loadXmem(l);
                 compare(r);
+                flipZ();
                 branchN();
-
             }
 
             //done
             //var bool
             if(left.matches("[a-z]")  && (right.equals("true")||right.equals("false"))){
-                addLog("ReadIf.var Bool");
+                addLog("Read!=If.var Bool");
                 loadXmem(left);
                 String r = createNewMemValBool(right);
                 compare(r);
+                flipZ();
                 branchN();
             }
 
             //done
             //var int
             if(left.matches("[a-z]")  && Character.toString(right.charAt(0)).matches("[0-9]")){
-                addLog("ReadIf.var int");
+                addLog("Read!=If.var int");
                 loadXmem(left);
                 String r = createNewMemValInt(right);
                 compare(r);
+                flipZ();
                 branchN();
             }
 
             //TODO
             //var string
             if(left.matches("[a-z]")  && right.charAt(0) == '"'){
-                addLog("ReadIf.var string");
+                addLog("Read!=If.var string");
 
             }
 
             //done
             //bool var
             if((left.equals("true")||left.equals("false")) && right.matches("[a-z]")){
-                addLog("ReadIf.Bool var");
+                addLog("Read!=If.Bool var");
                 loadXmem(right);
                 String l = createNewMemValBool(left);
                 compare(l);
+                flipZ();
                 branchN();
             }
 
             //int var
             if(Character.toString(left.charAt(0)).matches("[0-9]") && right.matches("[a-z]")   ){
-                addLog("ReadIf.int var");
+                addLog("Read!=If.int var");
                 loadXmem(right);
                 String l = createNewMemValInt(left);
                 compare(l);
+                flipZ();
                 branchN();
             }
 
             //TODO
             //string var
             if( left.charAt(0) == '"' && right.matches("[a-z]")){
-                addLog("ReadIf.string var");
+                addLog("Read!=If.string var");
 
             }
 
@@ -701,6 +705,7 @@ public class CodeGen {
         pos++;
     }
 
+
     public void increment(){
 
     }
@@ -786,6 +791,30 @@ public class CodeGen {
         }
 
         return intToHexString(backPos+1);
+    }
+
+    public void flipZ(){
+        addLog("branchN: ");
+        hexTable[pos] = "D0";
+        pos++;
+        String val = "1C";
+        //addJumpRow(val);
+        hexTable[pos] = val;
+        pos++;
+        String l = createNewMemValInt("1");
+        String r = createNewMemValInt("2");
+        loadXmem(l); //3
+        compare(r);
+        hexTable[pos] = "D0";
+        pos++;
+        val = "07";
+        //addJumpRow(val);
+        hexTable[pos] = val;
+        pos++;
+        l = createNewMemValInt("1");
+        r = createNewMemValInt("1");
+        loadXmem(l);
+        compare(r);
     }
 
     //USE FOR IFS when not a Var

@@ -4,6 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Clipboard;
+import javafx.scene.text.Font;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
@@ -119,10 +123,14 @@ public class MainController {
 
                     String hex = (String) sent.get(0);
                     codeGenLog = (String) sent.get(1);
+                    taOutput.appendText("\nThe Hex Output has been already copied\nto your clipboard for your convience.\n");
                     taOutput.appendText("\nHEX OUTPUT\n");
                     taOutput.appendText(hex);
                     taOutput.appendText("\n\n");
-
+                    final Clipboard clipboard = Clipboard.getSystemClipboard();
+                    final ClipboardContent content = new ClipboardContent();
+                    content.putString(hex);
+                    clipboard.setContent(content);
 
                 } else {
                     taOutput.appendText("AST ERRORS:\n" + astErrors + "\n");
@@ -150,7 +158,7 @@ public class MainController {
                 "print(b)\n" +
                 "}}$");
     }
-  
+
 
 
     //toggles verbose mode on and off and displays the state in taOutput
