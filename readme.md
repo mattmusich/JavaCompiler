@@ -1,23 +1,22 @@
 # CMPT 432
-## JavaCompiler
-
-## Project 3:
+### JavaCompiler
+### Project 3:
 
 ### What Works:
-Inits: all types
-Assignments: all types
-Printing: all types
-If and while: int comparisons 
-If and while: boolean comparisons
-If and while: var comparisons
+- Inits: all types
+- Assignments: all types
+- Printing: all types
+- If and while: int comparisons 
+- If and while: boolean comparisons
+- If and while: var comparisons
 
 ### Not Working:
-If and while: String comparisons
-Boolean hell
+- If and while: String comparisons
+- Boolean hell
 
 ### Buggy:
-nested ifs in Whiles and vice versa(Upwards Jumps)
-The issues occur depending on the what the ifs and whiles are doing.
+- nested ifs in Whiles and vice versa(Upwards Jumps)
+- The issues occur depending on the what the ifs and whiles are doing.
 
 ### About:
 This Compiler will Take Alan++(http://labouseur.com/courses/compilers/grammar.pdf)
