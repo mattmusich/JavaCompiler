@@ -173,7 +173,7 @@ public class CstToAst {
                                     tempAst.addBranchNode(rightId,"leaf"); //TODO
                                     tempAst.endChildren();
                                 } else {
-                                    System.out.println("NO MATCH");
+                                    System.out.println("NO MATCH ASS");
                                     errors += "Id's don't match: Type: "+checkType(rightId, hashTree.current) + " doesn't match " + checkType(leftId, hashTree.current) + "\n";
                                 }
 
@@ -537,13 +537,14 @@ public class CstToAst {
                         addLog(tempAst.current.nodeName);
 
                         //Compares the two sides that were added, to see if the types are the same, if this check fails it will create an error
-                        addLog(checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current));
-                        addLog(checkType(tempAst.current.nodeChildren.get(1).nodeName, hashTree.current));
+                        String type1 = checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current);
+                        String type2 = checkType(tempAst.current.nodeChildren.get(1).nodeName, hashTree.current);
+                        addLog("WOAH"+type1+type2+"\n");
                         if ((checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current)).equals(checkType(tempAst.current.nodeChildren.get(1).nodeName,hashTree.current))){
                             addLog("COMPARE MATCHES");
                         } else {
                             System.out.println("NO MATCH");
-                            errors += "Type: "+checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current) + " doesn't match " + checkType(tempAst.current.nodeChildren.get(1).nodeName, hashTree.current) + "\n";
+                            errors += "\nType: "+checkType(tempAst.current.nodeChildren.get(0).nodeName, hashTree.current) + " doesn't match " + checkType(tempAst.current.nodeChildren.get(1).nodeName, hashTree.current) + "\n";
                         }
 
                             tempAst.endChildren();
@@ -679,6 +680,7 @@ public class CstToAst {
 
         if (testcase.matches("[a-z]")){
             if(pointer.table.containsKey(testcase)){
+                addLog("CHECKTYPE:"+testcase+":"+pointer.table.get(testcase).toString());
                 return pointer.table.get(testcase).toString();
             } else {
                 if (pointer.nodeParent == null){
@@ -686,10 +688,12 @@ public class CstToAst {
                     errors += "Id: " + testcase + " was never made. Cannot type\n";
                 } else {
                     pointer = pointer.nodeParent;
-                    checkType(testcase, pointer); //TODO IS THIS SUPPOSE TO BE checkType
+                    String t = checkType(testcase, pointer); //TODO IS THIS SUPPOSE TO BE checkType
+                    return t;
                 }
             }
         } else if (testcase.matches("[0-9]")){
+            addLog("checktype.int");
             return "int";
         } else if (testcase.charAt(0) == '\"'){
             return "string";
@@ -698,6 +702,7 @@ public class CstToAst {
         }
 
         return "NOT A TYPE.ERROR. " + testcase + " <- is not a type\n";
+
     }
 
 }//EOF
