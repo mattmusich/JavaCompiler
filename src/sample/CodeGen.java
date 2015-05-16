@@ -8,6 +8,7 @@ public class CodeGen {
     int scope = 0;
     int pos;
     int backPos = 255;
+    int beforeWhile = 0;
     String[] hexTable;
     ArrayList<TempRow> tempTable;
     ArrayList<JumpRow> jumpTable;
@@ -58,6 +59,8 @@ public class CodeGen {
         hexArray = scan(ast.root);
         hexArray[pos] = "00";
         pos++;
+
+        addLog(ANSI_GREEN +"\nSTARTING JUMP PATCH\n" + ANSI_RESET);
         /*JUMP CHECK*/
         for (JumpRow j : jumpTable)
             addLog(j.dumpText());
@@ -120,7 +123,19 @@ public class CodeGen {
                     readPrint(head);
                     break;
                 case WHILE:
-                    readWhile();
+                    int startWJump = pos;
+                    beforeWhile = pos;
+                    readWhile(head);
+
+                    /*SUPER IMPORTANT*/
+                    readBlock(head);
+                    flipZ();
+                    branchUp();
+                    int jumpWEnd = pos - startWJump -1;
+
+                    String jumpW = getLastJump();
+                    insertLastJump(jumpW,jumpWEnd);
+
                     break;
                 case IF:
                     //START JUMP
@@ -515,7 +530,226 @@ public class CodeGen {
 
     }
 
-    public void readWhile(){
+    public void readWhile(treeNode head){
+        // true ==   false !=
+        if(head.nodeChildren.get(0).nodeName.equals("CompEQ")){
+            treeNode current = head.nodeChildren.get(0);
+            String left = current.nodeChildren.get(0).nodeName;
+            String right = current.nodeChildren.get(1).nodeName;
+            addLog("read==If.left:" +left);
+            addLog("read==If.right:" +right);
+
+            //done
+            if((left.equals("true")||left.equals("false")) && (right.equals("true")||right.equals("false")) ) {
+                addLog("Read==If.Bool Bool");
+                String l = createNewMemValBool(left);
+                String r = createNewMemValBool(right);
+                loadXmem(l);
+                compare(r);
+                branchN();
+
+            }
+
+            //done
+            if (left.matches("[a-z]") && right.matches("[a-z]")){
+                addLog("Read==If.var var");
+                loadXmem(left);
+                compare(right);
+                branchN();
+            }
+
+            //done
+            //check for int
+            if(Character.toString(left.charAt(0)).matches("[0-9]") && Character.toString(right.charAt(0)).matches("[0-9]")){
+                addLog("Read==If.int int");
+                String l = createNewMemValInt(left);
+                String r = createNewMemValInt(right);
+                loadXmem(l);
+                compare(r);
+                branchN();
+            }
+
+            //TODO
+            //check for string
+            if(left.charAt(0) == '"' && right.charAt(0) == '"'){
+                addLog("Read==If.string string");
+                String l = createNewMemValString(left);
+                String r = createNewMemValString(right);
+                addLog("ReadIf.string string.l: "+ l);
+                loadXmem(l);
+                compare(r);
+                branchN();
+
+            }
+
+            //done
+            //var bool
+            if(left.matches("[a-z]")  && (right.equals("true")||right.equals("false"))){
+                addLog("Read==If.var Bool");
+                loadXmem(left);
+                String r = createNewMemValBool(right);
+                compare(r);
+                branchN();
+            }
+
+            //done
+            //var int
+            if(left.matches("[a-z]")  && Character.toString(right.charAt(0)).matches("[0-9]")){
+                addLog("Read==If.var int");
+                loadXmem(left);
+                String r = createNewMemValInt(right);
+                compare(r);
+                branchN();
+            }
+
+            //TODO
+            //var string
+            if(left.matches("[a-z]")  && right.charAt(0) == '"'){
+                addLog("Read==If.var string");
+
+            }
+
+            //done
+            //bool var
+            if((left.equals("true")||left.equals("false")) && right.matches("[a-z]")){
+                addLog("Read==If.Bool var");
+                loadXmem(right);
+                String l = createNewMemValBool(left);
+                compare(l);
+                branchN();
+            }
+
+            //int var
+            if(Character.toString(left.charAt(0)).matches("[0-9]") && right.matches("[a-z]")   ){
+                addLog("Read==If.int var");
+                loadXmem(right);
+                String l = createNewMemValInt(left);
+                compare(l);
+                branchN();
+            }
+
+            //TODO
+            //string var
+            if( left.charAt(0) == '"' && right.matches("[a-z]")){
+                addLog("ReadIf.string var");
+
+            }
+
+
+
+        } else{
+            /*@@@@@ != @@@@@*/
+            treeNode current = head.nodeChildren.get(0);
+            String left = current.nodeChildren.get(0).nodeName;
+            String right = current.nodeChildren.get(1).nodeName;
+            addLog("read!=If.left:" +left);
+            addLog("read!=If.right:" +right);
+
+            //done
+            if((left.equals("true")||left.equals("false")) && (right.equals("true")||right.equals("false")) ) {
+                addLog("Read!=If.Bool Bool");
+                String l = createNewMemValBool(left);
+                String r = createNewMemValBool(right);
+                loadXmem(l);
+                compare(r);
+                flipZ();
+                branchN();
+            }
+
+            //done
+            if (left.matches("[a-z]") && right.matches("[a-z]")){
+                addLog("Read!=If.var var");
+                loadXmem(left);
+                compare(right);
+                flipZ();
+                branchN();
+            }
+
+            //done
+            //check for int
+            if(Character.toString(left.charAt(0)).matches("[0-9]") && Character.toString(right.charAt(0)).matches("[0-9]")){
+                addLog("Read!=If.int int");
+                String l = createNewMemValInt(left);
+                String r = createNewMemValInt(right);
+                loadXmem(l);
+                compare(r);
+                flipZ();
+                branchN();
+            }
+
+            //TODO
+            //check for string
+            if(left.charAt(0) == '"' && right.charAt(0) == '"'){
+                addLog("Read!=If.string string");
+                String l = createNewMemValString(left);
+                String r = createNewMemValString(right);
+                addLog("Read!=If.string string.l: "+ l);
+                loadXmem(l);
+                compare(r);
+                flipZ();
+                branchN();
+            }
+
+            //done
+            //var bool
+            if(left.matches("[a-z]")  && (right.equals("true")||right.equals("false"))){
+                addLog("Read!=If.var Bool");
+                loadXmem(left);
+                String r = createNewMemValBool(right);
+                compare(r);
+                flipZ();
+                branchN();
+            }
+
+            //done
+            //var int
+            if(left.matches("[a-z]")  && Character.toString(right.charAt(0)).matches("[0-9]")){
+                addLog("Read!=If.var int");
+                loadXmem(left);
+                String r = createNewMemValInt(right);
+                compare(r);
+                flipZ();
+                branchN();
+            }
+
+            //TODO
+            //var string
+            if(left.matches("[a-z]")  && right.charAt(0) == '"'){
+                addLog("Read!=If.var string");
+
+            }
+
+            //done
+            //bool var
+            if((left.equals("true")||left.equals("false")) && right.matches("[a-z]")){
+                addLog("Read!=If.Bool var");
+                loadXmem(right);
+                String l = createNewMemValBool(left);
+                compare(l);
+                flipZ();
+                branchN();
+            }
+
+            //int var
+            if(Character.toString(left.charAt(0)).matches("[0-9]") && right.matches("[a-z]")   ){
+                addLog("Read!=If.int var");
+                loadXmem(right);
+                String l = createNewMemValInt(left);
+                compare(l);
+                flipZ();
+                branchN();
+            }
+
+            //TODO
+            //string var
+            if( left.charAt(0) == '"' && right.matches("[a-z]")){
+                addLog("Read!=If.string var");
+
+            }
+
+
+
+        }
 
     }
 
@@ -705,6 +939,17 @@ public class CodeGen {
         pos++;
     }
 
+    public void branchUp(){
+        addLog("branchUp: pos:" + pos + " bw:" + beforeWhile + " Scope:" + scope);
+        int x = (255-pos)+beforeWhile;
+        addLog(Integer.toString(x));
+        hexTable[pos] = "D0";
+        pos++;
+        String val = intToHexString(x-1);
+        addLog("branchUp: val: " +val);
+        hexTable[pos] = val;
+        pos++;
+    }
 
     public void increment(){
 
@@ -862,9 +1107,13 @@ public class CodeGen {
     public boolean isInSameTempScope(String var){
         addLog("isInSameTempScope.Scope: " + scope);
         addLog("isInSameTempScope.Var: " + var);
+        int s = scope; //
         for (TempRow t : tempTable){
-            if (t.var.equals(var) && t.scope == scope){
-                return true;
+            for(int i = s; i > 0;i--) { //
+                addLog("isInSameTempScope.Var: " + i);//
+                if (t.var.equals(var) && t.scope == i) { //i to scope
+                    return true;
+                }//
             }
         }
         return false;
@@ -872,10 +1121,14 @@ public class CodeGen {
 
 
     public String getTempName(String var){
+        int s = scope; //
         for (TempRow t : tempTable){
-            if (t.var.equals(var) && t.scope == scope) {
-                return t.name;
-            }
+            for(int i = s; i > 0;i--) {//
+                addLog("isInSameTempScope.Var: " + i);//
+                if (t.var.equals(var) && t.scope == i) {//i to scope
+                    return t.name;
+                }
+            } //
         }
 
         return "ZZ";
