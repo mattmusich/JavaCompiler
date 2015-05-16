@@ -530,6 +530,7 @@ public class CodeGen {
 
     }
 
+    //Still pretty buggy
     public void readWhile(treeNode head){
         // true ==   false !=
         if(head.nodeChildren.get(0).nodeName.equals("CompEQ")){
